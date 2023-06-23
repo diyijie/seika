@@ -1,5 +1,9 @@
-package io.zbus.mq;
+package io.zbus;
 
+import io.zbus.mq.MqClient;
+import io.zbus.mq.MqServer;
+import io.zbus.mq.MqServerConfig;
+import io.zbus.mq.Protocol;
 import io.zbus.transport.DataHandler;
 import io.zbus.transport.Message;
 
@@ -8,12 +12,12 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-class MqSpringClient{
+public class ZbusSeikaClient {
 	private MqClient client ;
 	private MqClient clientSub ;
 	private static Map<String, Boolean> created = new ConcurrentHashMap<>();
 
-	MqSpringClient(  MqServerConfig config ){
+	public ZbusSeikaClient(MqServerConfig config ){
 		MqServer server = new MqServer(config);
  		client= new MqClient(server);
 		clientSub = new MqClient(server);
@@ -21,8 +25,8 @@ class MqSpringClient{
 	private MqClient newc(String address,String apiKey,String secretKey){
 		MqClient client = new MqClient(address);
 		client.heartbeat(30, TimeUnit.SECONDS);
-		apiKey = "2ba912a8-4a8d-49d2-1a22-198fd285cb06";
-		secretKey = "461277322-943d-4b2f-b9b6-3f860d746ffd";
+//		apiKey = "2ba912a8-4a8d-49d2-1a22-198fd285cb06";
+//		secretKey = "461277322-943d-4b2f-b9b6-3f860d746ffd";
 		if (apiKey!=null && secretKey!=null && !"".equals(apiKey) && !"".equals(secretKey)){
 			client.setAuthEnabled(true);
 			client.setApiKey(apiKey);
@@ -32,7 +36,7 @@ class MqSpringClient{
 
 		return client ;
 	}
-	MqSpringClient(String address,String apiKey,String secretKey ){
+	public ZbusSeikaClient(String address, String apiKey, String secretKey){
 		client = newc(address,apiKey,secretKey);
 		clientSub = newc(address,apiKey,secretKey);
 	}

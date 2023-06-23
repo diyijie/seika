@@ -1,5 +1,7 @@
 package io.zbus.mq;
 
+import io.zbus.ZbusSeikaClient;
+
 public class Pub {
 
 	public static MqClient buildInproClient() {
@@ -9,7 +11,7 @@ public class Pub {
 
 	@SuppressWarnings("resource")
 	public static void main(String[] args) throws Exception {
-		MqSpringClient dd =new MqSpringClient("ws://127.0.0.1:15555","","");
+		ZbusSeikaClient dd =new ZbusSeikaClient("ws://127.0.0.1:15555","","");
 		//dd =new MqSpringClient(new MqServerConfig("./conf/zbus.xml"));
 		for (int i = 0; i < 1000000; i++) {
 			dd.Pub("MyMQQ",i,"000",null);

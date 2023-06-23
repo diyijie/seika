@@ -6,3 +6,13 @@
 
 
 [ ] 集成spring 
+@Resource
+ZbusSeikaClient client ;
+
+
+zbus:
+    seika:
+        enabled: true
+        address: 127.0.0.1:15555
+        apiKey
+        secretKey
