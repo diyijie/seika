@@ -1,16 +1,15 @@
 package io.zbus.mq;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.zbus.kit.JsonKit;
 import io.zbus.transport.Client;
 import io.zbus.transport.DataHandler;
-import io.zbus.transport.Message; 
+import io.zbus.transport.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class MqClient extends Client{ 
 	private static final Logger logger = LoggerFactory.getLogger(MqClient.class);  
@@ -23,7 +22,19 @@ public class MqClient extends Client{
 		public Integer window;
 		public DataHandler<Message> handler;
 	}
-	
+	public List<MqHandler> getHandlersCache(){
+		  List<MqHandler> handlers = new ArrayList<>();
+ 		for (MqHandler h:handlers
+			 ) {
+			MqHandler hh=new MqHandler();
+		    hh.mq = h.mq;
+			hh.channel = h.channel;
+			hh.window =h.window ;
+			handlers.add(hh);
+		 }
+		 return handlers;
+	}
+
 	public MqClient(String address) {  
 		super(address);
 		onMessage(msg->{

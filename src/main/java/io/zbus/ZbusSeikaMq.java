@@ -5,6 +5,7 @@ import io.zbus.mq.MqServer;
 import io.zbus.mq.MqServerConfig;
 import io.zbus.mq.Protocol;
 import io.zbus.transport.DataHandler;
+import io.zbus.transport.EventHandler;
 import io.zbus.transport.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +15,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-public class ZbusSeikaMq {
+public class ZbusSeikaMq implements EventHandler {
 	private MqClient client ;
 	private MqClient clientSub ;
 	private static Map<String, Boolean> created = new ConcurrentHashMap<>();
@@ -22,13 +23,20 @@ public class ZbusSeikaMq {
 
 	public ZbusSeikaMq(MqServerConfig config ){
 		MqServer server = new MqServer(config);
- 		client= new MqClient(server);
-		clientSub = new MqClient(server);
+ 		client= newmq(server);
+		clientSub =newmq(server);
+	}
+	private MqClient newmq(MqServer server){
+		MqClient client= new MqClient(server);
+		client.heartbeat(30, TimeUnit.SECONDS);
+
+		client.onOpen(this);
+
+		return client;
 	}
 	private MqClient newc(String address,String apiKey,String secretKey){
 		MqClient client = new MqClient(address);
-		client.heartbeat(30, TimeUnit.SECONDS);
-//		apiKey = "2ba912a8-4a8d-49d2-1a22-198fd285cb06";
+ //		apiKey = "2ba912a8-4a8d-49d2-1a22-198fd285cb06";
 //		secretKey = "461277322-943d-4b2f-b9b6-3f860d746ffd";
 		if (apiKey!=null && secretKey!=null && !"".equals(apiKey) && !"".equals(secretKey)){
 			client.setAuthEnabled(true);
@@ -36,7 +44,7 @@ public class ZbusSeikaMq {
 			client.setSecretKey(secretKey);
 		}
 		client.heartbeat(30, TimeUnit.SECONDS);
-
+		client.onOpen(this);
 		return client ;
 	}
 	public ZbusSeikaMq(String address, String apiKey, String secretKey){
@@ -101,4 +109,16 @@ public class ZbusSeikaMq {
 
 	}
 
+	@Override
+	public void handle() throws Exception {
+// 如果不重新订阅那么 mq服务器重启后 会收不到消息了
+		clientSub.getHandlersCache().forEach(h->{
+			Message sub = new Message();
+			sub.setHeader("cmd", "sub"); //Subscribe on MQ/Channel
+			sub.setHeader("mq", h.mq);
+			sub.setHeader("channel", h.channel);
+			clientSub.invoke(sub, data->{
+			});
+		});
+	}
 }
