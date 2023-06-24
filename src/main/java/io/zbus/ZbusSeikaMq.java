@@ -6,18 +6,21 @@ import io.zbus.mq.MqServerConfig;
 import io.zbus.mq.Protocol;
 import io.zbus.transport.DataHandler;
 import io.zbus.transport.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-public class ZbusSeikaClient {
+public class ZbusSeikaMq {
 	private MqClient client ;
 	private MqClient clientSub ;
 	private static Map<String, Boolean> created = new ConcurrentHashMap<>();
+	private static final Logger logger = LoggerFactory.getLogger(ZbusSeikaMq.class);
 
-	public ZbusSeikaClient(MqServerConfig config ){
+	public ZbusSeikaMq(MqServerConfig config ){
 		MqServer server = new MqServer(config);
  		client= new MqClient(server);
 		clientSub = new MqClient(server);
@@ -36,7 +39,7 @@ public class ZbusSeikaClient {
 
 		return client ;
 	}
-	public ZbusSeikaClient(String address, String apiKey, String secretKey){
+	public ZbusSeikaMq(String address, String apiKey, String secretKey){
 		client = newc(address,apiKey,secretKey);
 		clientSub = newc(address,apiKey,secretKey);
 	}
@@ -89,8 +92,12 @@ public class ZbusSeikaClient {
 		clientSub.addMqHandler(mq, channel, dataHandler);
 
 		clientSub.invoke(sub, data->{
-			//System.out.println(data);
-		});
+			if (200==data.getStatus()){
+				logger.debug("%s",data);
+			}else{
+				logger.warn("%s",data);
+			}
+ 		});
 
 	}
 

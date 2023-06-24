@@ -60,10 +60,10 @@ public class UrlRouteFilter implements Filter {
 		} 
 		
 		RpcProcessor rpcProcessor = mqServerAdaptor.getRpcProcessor();  
-		if(rpcProcessor != null) {
-			rpcProcessor.process(req, res); 
+  		if(rpcProcessor != null) {
+			rpcProcessor.process(req, res);
 			return false;
-		}  
+		}
 		
 		//last resolve to static resource
 		Message data = staticResource.file(req);

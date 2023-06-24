@@ -1,8 +1,5 @@
 package io.zbus.rpc;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.alibaba.fastjson.JSONObject;
 import io.zbus.kit.FileKit;
 import io.zbus.mq.MqServer;
@@ -12,6 +9,9 @@ import io.zbus.rpc.annotation.Route;
 import io.zbus.rpc.biz.InterfaceExampleImpl;
 import io.zbus.rpc.biz.model.User;
 import io.zbus.transport.Message;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RpcServerFullExamples {  
 	private FileKit fileKit = new FileKit(false);  
@@ -100,29 +100,92 @@ public class RpcServerFullExamples {
 	public Message favicon() { 
 		return fileKit.render("static/favicon.ico"); 
 	}
-	 
+	 public static void main(String[] args) throws  Exception{
+		 RpcProcessor p = new RpcProcessor();
+//
+//		 //build filer
+//		 Map<String, Object> table = ctx.getBeansWithAnnotation(FilterDef.class);
+//		 for(Map.Entry<String, Object> e : table.entrySet()) {
+//			 Object service = e.getValue();
+//			 if(!(service instanceof RpcFilter)) {
+//				 continue; //ignore
+//			 }
+//			 RpcFilter filter = (RpcFilter) service;
+//			 FilterDef anno = service.getClass().getAnnotation(FilterDef.class);
+//			 if(anno == null) continue;
+//			 String name = anno.name();
+//			 if(StrKit.isEmpty(name)) name = anno.value();
+//
+//			 FilterType type = anno.type();
+//			 if(type == FilterType.GlobalBefore) {
+//				 p.setBeforeFilter(filter);
+//			 } else if(type == FilterType.GlobalAfter) {
+//				 p.setAfterFilter(filter);
+//			 } else if(type == FilterType.Exception) {
+//				 p.setExceptionFilter(filter);
+//			 }
+//
+//			 if(!StrKit.isEmpty(name)) {
+//				 p.getAnnotationFilterTable().put(name, filter);
+//			 }
+//		 }
+//
+//		 //mount service with Route annotation
+//		 table = ctx.getBeansWithAnnotation(Route.class);
+//		 for(Map.Entry<String, Object> e : table.entrySet()) {
+//			 Object service = e.getValue();
+//
+//			 Route anno = service.getClass().getAnnotation(Route.class);
+//			 if(anno == null) continue;
+//			 String urlPrefix = anno.path();
+//			 if(StrKit.isEmpty(urlPrefix)) urlPrefix = anno.value();
+//			 if(!StrKit.isEmpty(urlPrefix)) {
+//				 p.mount(urlPrefix, service);
+//			 }
+//		 }
+//
+//		     int port = 15555;
+//		     String severAdrr="0.0.0.0";//"server.address"
+//			 MqServerConfig config = new MqServerConfig(severAdrr, port);
+//			 config.setVerbose(false);
+//
+//			 RpcServer rpcServer = new RpcServer();
+//			 rpcServer.setRpcProcessor(p);
+//			 p.setDocFile("rpc.html");
+//
+//
+//			 //rpcServer.setMqServerAddress("localhost:15555");
+//			 rpcServer.setMq("/");
+//			 rpcServer.setMqServer(new MqServer(config));
+//
+//			 rpcServer.setApiKey("xxx");
+//			 rpcServer.setSecretKey("xxx");
+//			 rpcServer.setAuthEnabled(true);
+//			 rpcServer.start();
+
+	}
 	@SuppressWarnings("resource")
-	public static void main(String[] args) throws Exception {  
+	public static void main2(String[] args) throws Exception {
 		RpcProcessor p = new RpcProcessor();   
 		//1) mount two java class to different root URLs
 		p.mount("/", RpcServerFullExamples.class);  
 		p.mount("/example", InterfaceExampleImpl.class);
-		
+
 		//2) Serve static files
-		StaticResource resource = new StaticResource(); 
-		resource.setBasePath("\\tmp");   
-		p.mount("/static", resource);
-		
-		
-		//3) Dynamically insert a method
-		RpcMethod spec = new RpcMethod(); 
-		spec.urlPath = "/dynamic/func1";
-		spec.method = "func1";
-		spec.addParam(String.class, "name");
-		spec.addParam(Integer.class, "age"); 
-		
-		spec.returnType = Map.class.getName(); 
-		p.mount(spec, new GenericService());    
+//		StaticResource resource = new StaticResource();
+//		resource.setBasePath("\\tmp");
+//		p.mount("/static", resource);
+//
+//
+//		//3) Dynamically insert a method
+//		RpcMethod spec = new RpcMethod();
+//		spec.urlPath = "/dynamic/func1";
+//		spec.method = "func1";
+//		spec.addParam(String.class, "name");
+//		spec.addParam(Integer.class, "age");
+//
+//		spec.returnType = Map.class.getName();
+//		p.mount(spec, new GenericService());
 		
 		p.setExceptionFilter(new RpcFilter() { 
 			@Override
@@ -135,14 +198,19 @@ public class RpcServerFullExamples {
 		
 		MqServerConfig config = new MqServerConfig("0.0.0.0", 15555);
 		config.setVerbose(false);
-		
+
 		RpcServer rpcServer = new RpcServer(); 
-		rpcServer.setRpcProcessor(p); 
+		rpcServer.setRpcProcessor(p);
 		p.setDocFile("rpc.html");
-		
+
+
 		//rpcServer.setMqServerAddress("localhost:15555");
-		rpcServer.setMq("/");  
+		rpcServer.setMq("/");
+
 		rpcServer.setMqServer(new MqServer(config));
+		rpcServer.setApiKey("xxx");
+		rpcServer.setSecretKey("xxx");
+		rpcServer.setAuthEnabled(true);
 		rpcServer.start();  
 	}  
 }

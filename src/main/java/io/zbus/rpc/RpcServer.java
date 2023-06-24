@@ -1,5 +1,17 @@
 package io.zbus.rpc;
 
+import io.zbus.auth.DefaultSign;
+import io.zbus.auth.RequestSign;
+import io.zbus.kit.HttpKit;
+import io.zbus.kit.JsonKit;
+import io.zbus.mq.MqClient;
+import io.zbus.mq.MqServer;
+import io.zbus.mq.Protocol;
+import io.zbus.transport.Message;
+import io.zbus.transport.http.Http;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,15 +20,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import io.zbus.kit.HttpKit;
-import io.zbus.kit.JsonKit;
-import io.zbus.mq.MqClient;
-import io.zbus.mq.MqServer;
-import io.zbus.mq.Protocol;
-import io.zbus.transport.Message;
+import static io.zbus.auth.RequestAuth.SIGNATURE;
 
 public class RpcServer implements Closeable {
 	private static final Logger logger = LoggerFactory.getLogger(RpcServer.class);
@@ -102,8 +106,9 @@ public class RpcServer implements Closeable {
 			MqClient client = startClient();
 			clients.add(client);
 		}
-	} 
-	
+	}
+	private RequestSign requestSign = new DefaultSign();
+
 	protected MqClient startClient() {
 		MqClient client = null;
 		if (mqServer != null) {
@@ -137,14 +142,30 @@ public class RpcServer implements Closeable {
 					request.setUrl(url);
 				}
 			}
-			
+			//假如启动时候没有 setMq("/"); 实际没有走这里 会走走了另外一个 rpcProcessor.process地方 UrlRouteFilter
 			runner.submit(()->{
-				Message response = new Message(); 
-				rpcProcessor.process(request, response);   
-				if(response.getStatus() == null) {
-					response.setStatus(200);
+				Message response = new Message();
+				boolean ok= true ;
+				//调用前先坐下 apikey验证
+				if (authEnabled && !request.getUrl().equals(getRpcProcessor().getDocUrl())){
+					//getMqServer().getConfig().publicServer.getAuth()
+ 					String sign = (String)request.getHeader(SIGNATURE);
+
+					String sign2 = requestSign.calcSignature(request, apiKey, secretKey);
+					if(sign==null || !sign.equals(sign2)) {
+						response.setBody("signature mismatched");
+						response.setHeader(Http.CONTENT_TYPE, "text/html; charset=utf8");
+						response.setStatus(500);
+						ok = false ;
+					}
 				}
-				
+				if (ok){
+					rpcProcessor.process(request, response);
+					if(response.getStatus() == null) {
+						response.setStatus(200);
+					}
+				}
+
 				if(!routeDisabled) {
 					response.setHeader(Protocol.CMD, Protocol.ROUTE);
 					response.setHeader(Protocol.TARGET, source);

@@ -1,15 +1,15 @@
 package io.zbus.rpc;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-
 import io.zbus.kit.HttpKit;
 import io.zbus.kit.JsonKit;
 import io.zbus.transport.Client;
 import io.zbus.transport.IoAdaptor;
-import io.zbus.transport.Message; 
+import io.zbus.transport.Message;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 public class RpcClient extends Client {  
 	private String urlPrefix = "";
@@ -99,11 +99,11 @@ public class RpcClient extends Client {
 					&& params[0].equals(Object.class)) {
 				Object value0 = args[0];
 				if (value0 == null || !Proxy.isProxyClass(value0.getClass()))
-					return new Boolean(false);
+					return false;
 				RpcInvocationHandler handler = (RpcInvocationHandler) Proxy.getInvocationHandler(value0);
-				return new Boolean(this.rpc.equals(handler.rpc));
+				return   this.rpc.equals(handler.rpc);
 			} else if (methodName.equals("hashCode") && params.length == 0) {
-				return new Integer(this.rpc.hashCode());
+				return this.rpc.hashCode();
 			} else if (methodName.equals("toString") && params.length == 0) {
 				return "RpcInvocationHandler[" + this.rpc + "]";
 			}

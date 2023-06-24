@@ -5,13 +5,23 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 /**
  * Created by lijie on 9/7/16.
  */
-@ConfigurationProperties(prefix = "zbus.seika")
+@ConfigurationProperties(prefix = SeikaProperties.SEIKA_PREFIX)
 public class SeikaProperties {
-    private String address="";
+    final static String SEIKA_PREFIX= "zbus.seika";
+    public final static  String ENABLED = SeikaProperties.SEIKA_PREFIX + ".enabled";
+    private String address;
+    private int rpcPort;
     private String  apiKey ;
     private String  secretKey ;
     private boolean  enabled ;
 
+    public int getRpcPort() {
+        return rpcPort;
+    }
+
+    public void setRpcPort(int rpcPort) {
+        this.rpcPort = rpcPort;
+    }
 
     public boolean isEnabled() {
         return enabled;

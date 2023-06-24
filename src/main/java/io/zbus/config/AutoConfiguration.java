@@ -1,6 +1,6 @@
 package io.zbus.config;
 
-import io.zbus.ZbusSeikaClient;
+import io.zbus.ZbusSeikaMq;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
@@ -21,10 +21,10 @@ public class AutoConfiguration implements EnvironmentAware{
 
 
     @Bean()
-    @ConditionalOnProperty(prefix = "zbus.seika", name = "enabled",havingValue = "true" )
-    public ZbusSeikaClient zbusSeikaClient(SeikaProperties prop )   {
+    @ConditionalOnProperty(  name = SeikaProperties.ENABLED,havingValue = "true" )
+    public ZbusSeikaMq zbusSeikaClient(SeikaProperties prop )   {
         if (prop.getAddress()!=null && !prop.getAddress().equals("")){
-          return new ZbusSeikaClient(prop.getAddress(), prop.getApiKey(), prop.getSecretKey());
+          return new ZbusSeikaMq(prop.getAddress(), prop.getApiKey(), prop.getSecretKey());
         }
         return null ;
     }
