@@ -53,9 +53,9 @@ public class ZbusSeikaMq {
 			req.setHeader("cmd", "create");  //Create
 			req.setHeader("mq", mq);
 			req.setHeader("mqType", mqType); //disk|memory|db
-//			if (channel!=null && !channel.equals("")){
-//			req.setHeader("channel", "channel");
-//			}
+			if (channel!=null && !channel.equals("")){
+			req.setHeader("channel", channel);
+			}
 			//sign.sign(req, apiKey, secretKey);
 			client.invoke(req);
 			created.put(key,true);
