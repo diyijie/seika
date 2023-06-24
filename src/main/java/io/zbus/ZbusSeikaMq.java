@@ -1,5 +1,6 @@
 package io.zbus;
 
+import io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueue;
 import io.zbus.mq.MqClient;
 import io.zbus.mq.MqServer;
 import io.zbus.mq.MqServerConfig;
@@ -7,12 +8,15 @@ import io.zbus.mq.Protocol;
 import io.zbus.transport.DataHandler;
 import io.zbus.transport.EventHandler;
 import io.zbus.transport.Message;
+import jdk.internal.net.http.common.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class ZbusSeikaMq implements EventHandler {
@@ -47,9 +51,29 @@ public class ZbusSeikaMq implements EventHandler {
 		client.onOpen(this);
 		return client ;
 	}
+	private ExecutorService rePubExecutorService=  Executors.newSingleThreadExecutor();
+	private MpscArrayQueue<Pair<Message,DataHandler>> queue= new MpscArrayQueue<>(1000);
+
 	public ZbusSeikaMq(String address, String apiKey, String secretKey){
-		client = newc(address,apiKey,secretKey);
 		clientSub = newc(address,apiKey,secretKey);
+		client = newc(address,apiKey,secretKey);
+		//实际上没有用到 因为errhanderl 不会被执行 内部如果没有发送出去的会缓存到list 然后有连接了再发送走
+//		rePubExecutorService.submit((Runnable) () -> {
+//			while(true){
+//				Pair<Message, DataHandler> obj = queue.relaxedPoll();
+//
+//				if(obj!=null)	{
+//					client.invoke(obj.first, res->{ //async call
+//						if (obj.second!=null){
+//							obj.second.handle(res);
+//						}
+//					}, (e) -> {
+//						queue.add(Pair.pair(obj.first, obj.second));
+//					});
+//				}
+//			}
+//		});
+
 	}
 	private void create(String mq,String channel)  throws IOException, InterruptedException {
 		String key=mq+"."+channel;
@@ -70,6 +94,7 @@ public class ZbusSeikaMq implements EventHandler {
 		}
 
 	}
+
 	public void  Pub(String mq, Object body,String channel,DataHandler<Message> dataHandler) throws IOException, InterruptedException {
 		this.create(mq,channel);
 
@@ -84,8 +109,12 @@ public class ZbusSeikaMq implements EventHandler {
 			if (dataHandler!=null){
 				dataHandler.handle(res);
 			}
+		},e->{
+			queue.add(Pair.pair(msg,dataHandler));
 		});
+
 	}
+
 	public void  Sub(String mq,String channel,DataHandler<Message> dataHandler) throws IOException, InterruptedException {
 		this.create(mq,channel);
 
@@ -105,7 +134,9 @@ public class ZbusSeikaMq implements EventHandler {
 			}else{
 				logger.warn("%s",data);
 			}
- 		});
+ 		},e -> {
+			logger.error("sub fail",e);
+		});
 
 	}
 
