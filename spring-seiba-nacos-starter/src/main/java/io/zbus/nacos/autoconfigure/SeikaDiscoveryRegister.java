@@ -154,33 +154,25 @@ public class SeikaDiscoveryRegister
     @Override
     public void onApplicationEvent(WebServerInitializedEvent event) {
         context=event.getApplicationContext();
-        Register register = new Register(discoveryProperties,applicationName);
 
 
        boolean did=rpcStart();
         try {
-       //   namingService = NamingFactory.createNamingService("127.0.0.1:8848");
 
-       // register.getMetadata().put("preserved.register.source", "SPRING_BOOT");
-            NacosConfigManager configManager = (context).getBean(NacosConfigManager.class);
-            namingService = NacosFactory.createNamingService(configManager.getNacosConfigProperties().getServerAddr());
 
-            if (did && namingService!=null){
-            namingService.registerInstance(register.getServiceName(), register.getGroupName(),
+            if (did  ){
+                NacosConfigManager configManager = (context).getBean(NacosConfigManager.class);
+                namingService = NacosFactory.createNamingService(configManager.getNacosConfigProperties().getServerAddr());
+                Register register = new Register(discoveryProperties,applicationName);
+                namingService.registerInstance(register.getServiceName(), register.getGroupName(),
                     register);
-            logger.info("Finished auto register service : {}, ip : {}, port : {}",
+                 logger.info("Finished auto SeiKa-rpc register  : {}, ip : {}, port : {}",
                     register.getServiceName(), register.getIp(), register.getPort());
             }
 
         } catch (NacosException e) {
              throw new RuntimeException(e);
         }
-
-        //TODO 监听服务 扫描到的客户端接口
-//        Instance selectOneHealthyInstance(String serviceName) throws NacosException;
-//
-//        namingService.getSubscribeServices().
-
     }
 
 
