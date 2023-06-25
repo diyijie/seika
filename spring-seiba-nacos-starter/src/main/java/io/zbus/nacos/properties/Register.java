@@ -4,7 +4,7 @@ package io.zbus.nacos.properties;
 import com.alibaba.nacos.api.common.Constants;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.alibaba.nacos.api.utils.NetUtils;
-import com.alibaba.nacos.common.utils.StringUtils;
+import com.alibaba.nacos.api.utils.StringUtils;
 import io.zbus.config.SeikaProperties;
 
 /**

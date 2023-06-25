@@ -1,6 +1,9 @@
 package io.zbus.nacos;
 
+import com.alibaba.cloud.nacos.NacosConfigManager;
+import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.naming.NamingService;
+import com.alibaba.nacos.api.naming.pojo.Instance;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
@@ -32,15 +35,21 @@ public class  SeikaRpcClientFactoryProxy<T> implements FactoryBean<T> {
     public T getObject() throws Exception {
         SeikaServiceApi api=   (innerClass).getAnnotation(SeikaServiceApi.class);
         if(api==null){
-            throw new RuntimeException("interface error");
+             throw new RuntimeException("interface error");
         }
+
         if (seikaRpcClient==null){
             seikaRpcClient = ((DefaultListableBeanFactory) factory).getBean(SeikaRpcClient.class);
+        }
+        if (namingService ==null ){
+            NacosConfigManager configManager = ((DefaultListableBeanFactory) factory).getBean(NacosConfigManager.class);
+            namingService = NacosFactory.createNamingService(configManager.getNacosConfigProperties().getServerAddr());
         }
 //        Instance instace=  namingService.selectOneHealthyInstance(Register.WrapServiceName(api.value()));
 //
 //        String address = instace.getIp()+":"+instace.getPort();
-        String address = "127.0.0.1:15555";
+        Instance instHeal = namingService.selectOneHealthyInstance(api.value());
+        String address = instHeal.getIp()+":"+instHeal.getPort();
         return seikaRpcClient.Get(address,innerClass);
     }
 

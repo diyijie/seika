@@ -16,7 +16,8 @@
  */
 package io.zbus.nacos.autoconfigure;
 
-import com.alibaba.nacos.api.annotation.NacosInjected;
+import com.alibaba.cloud.nacos.NacosConfigManager;
+import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.utils.StringUtils;
@@ -52,8 +53,9 @@ public class SeikaDiscoveryRegister
     private static final Logger logger = LoggerFactory
             .getLogger(SeikaDiscoveryRegister.class);
 
-    @NacosInjected
-    private NamingService namingService;
+   // @NacosInjected
+
+    public NamingService namingService;
 
     @Autowired
     private SeikaProperties discoveryProperties;
@@ -102,12 +104,6 @@ public class SeikaDiscoveryRegister
 
             Route anno = service.getClass().getAnnotation(Route.class);
             if(anno == null) continue;
-//            String urlPrefix = anno.path();
-//            if(StrKit.isEmpty(urlPrefix)) urlPrefix = anno.value();
-//            if(!StrKit.isEmpty(urlPrefix)) {
-//                p.mount(urlPrefix, service);
-//                have = true ;
-//            }
             Type[] types = service.getClass().getGenericInterfaces() ;
             for (Type typ:types
                  ) {
@@ -161,9 +157,13 @@ public class SeikaDiscoveryRegister
 
 
        boolean did=rpcStart();
+        try {
+       //   namingService = NamingFactory.createNamingService("127.0.0.1:8848");
 
        // register.getMetadata().put("preserved.register.source", "SPRING_BOOT");
-        try {
+            NacosConfigManager configManager = (context).getBean(NacosConfigManager.class);
+            namingService = NacosFactory.createNamingService(configManager.getNacosConfigProperties().getServerAddr());
+
             if (did && namingService!=null){
             namingService.registerInstance(register.getServiceName(), register.getGroupName(),
                     register);
