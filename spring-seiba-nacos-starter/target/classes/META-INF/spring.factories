@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
- io.zbus.nacos.autoconfigure.NacosDiscoveryAutoConfiguration
+ io.zbus.nacos.autoconfigure.SeikaDiscoveryAutoConfiguration

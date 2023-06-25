@@ -23,10 +23,10 @@ import org.springframework.context.annotation.Configuration;
 
 
 @Configuration
-public class NacosDiscoveryAutoConfiguration {
+public class SeikaDiscoveryAutoConfiguration {
 
 	@Bean
-	public SeikaDiscoveryRegister discoveryAutoRegister() {
+	public SeikaDiscoveryRegister seikaDiscoveryRegister() {
 		return new SeikaDiscoveryRegister();
 	}
 	@Bean

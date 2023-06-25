@@ -2,6 +2,7 @@ package io.zbus.nacos;
 
 import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.nacos.api.NacosFactory;
+import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import io.zbus.nacos.properties.Register;
@@ -46,9 +47,13 @@ public class  SeikaRpcClientFactoryProxy<T> implements FactoryBean<T> {
             NacosConfigManager configManager = ((DefaultListableBeanFactory) factory).getBean(NacosConfigManager.class);
             namingService = NacosFactory.createNamingService(configManager.getNacosConfigProperties().getServerAddr());
         }
-        Instance instHeal = namingService.selectOneHealthyInstance(Register.WrapServiceName(api.value()));
-        String address = instHeal.getIp()+":"+instHeal.getPort();
-        return seikaRpcClient.Get(address,innerClass);
+        try{
+           Instance instHeal = namingService.selectOneHealthyInstance(Register.WrapServiceName(api.value()));
+           String address = instHeal.getIp()+":"+instHeal.getPort();
+            return seikaRpcClient.Get(address,innerClass);
+           }catch (NacosException | RuntimeException e){
+               return seikaRpcClient.Get(namingService,Register.WrapServiceName(api.value()),innerClass);
+            }
     }
 
     @Override

@@ -1,8 +1,8 @@
-/Users/linxo/Project/seika/spring-seiba-nacos-starter/src/main/java/io/zbus/nacos/autoconfigure/NacosDiscoveryAutoConfiguration.java
 /Users/linxo/Project/seika/spring-seiba-nacos-starter/src/main/java/io/zbus/nacos/autoconfigure/SeikaDiscoveryUnRegister.java
 /Users/linxo/Project/seika/spring-seiba-nacos-starter/src/main/java/io/zbus/nacos/autoconfigure/SeikaDiscoveryRegister.java
 /Users/linxo/Project/seika/spring-seiba-nacos-starter/src/main/java/io/zbus/nacos/ServiceDefiner.java
 /Users/linxo/Project/seika/spring-seiba-nacos-starter/src/main/java/io/zbus/nacos/properties/Register.java
 /Users/linxo/Project/seika/spring-seiba-nacos-starter/src/main/java/io/zbus/nacos/SeikaServiceApi.java
 /Users/linxo/Project/seika/spring-seiba-nacos-starter/src/main/java/io/zbus/nacos/SeikaRpcClientFactoryProxy.java
+/Users/linxo/Project/seika/spring-seiba-nacos-starter/src/main/java/io/zbus/nacos/autoconfigure/SeikaDiscoveryAutoConfiguration.java
 /Users/linxo/Project/seika/spring-seiba-nacos-starter/src/main/java/io/zbus/nacos/SeikaRpcClient.java
