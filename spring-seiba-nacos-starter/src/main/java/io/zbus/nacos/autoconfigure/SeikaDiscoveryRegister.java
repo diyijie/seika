@@ -130,6 +130,7 @@ public class SeikaDiscoveryRegister
                 port = discoveryProperties.getRpcPort();
             }
         }
+        discoveryProperties.setRpcPort(port);
         MqServerConfig config = new MqServerConfig(severAdrr, port);
         config.setVerbose(false);
 

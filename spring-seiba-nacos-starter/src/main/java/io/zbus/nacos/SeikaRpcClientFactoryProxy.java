@@ -45,9 +45,6 @@ public class  SeikaRpcClientFactoryProxy<T> implements FactoryBean<T> {
             NacosConfigManager configManager = ((DefaultListableBeanFactory) factory).getBean(NacosConfigManager.class);
             namingService = NacosFactory.createNamingService(configManager.getNacosConfigProperties().getServerAddr());
         }
-//        Instance instace=  namingService.selectOneHealthyInstance(Register.WrapServiceName(api.value()));
-//
-//        String address = instace.getIp()+":"+instace.getPort();
         Instance instHeal = namingService.selectOneHealthyInstance(api.value());
         String address = instHeal.getIp()+":"+instHeal.getPort();
         return seikaRpcClient.Get(address,innerClass);
