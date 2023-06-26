@@ -23,7 +23,7 @@
     <modelVersion>4.0.0</modelVersion>
 
      <packaging>jar</packaging>
-    <groupId>io.zbus</groupId>
+    <groupId>io.seika</groupId>
     <artifactId>spring-seika-nacos-starter</artifactId>
     <version>1.0.0</version>
 
@@ -149,7 +149,7 @@
             <version>${nacos.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.zbus</groupId>
+            <groupId>io.seika</groupId>
             <artifactId>seiba</artifactId>
             <version>1.0.0</version>
             <scope>compile</scope>

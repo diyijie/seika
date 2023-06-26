@@ -1,1 +1,10 @@
-io/zbus/nacos/autoconfigure/SeikaDiscoveryAutoConfiguration.class
+io/zeika/nacos/springcloud/properties/Register.class
+io/zeika/nacos/springcloud/SeikaRpcClient.class
+io/zeika/nacos/springcloud/SeikaRpcClientFactoryProxy.class
+io/zeika/nacos/springcloud/autoconfigure/SeikaDiscoveryAutoConfiguration.class
+io/zeika/nacos/springcloud/autoconfigure/SeikaDiscoveryUnRegister.class
+io/zeika/nacos/springcloud/SeikaServiceApi.class
+io/zeika/nacos/springcloud/scaner$1.class
+io/zeika/nacos/springcloud/ServiceDefiner.class
+io/zeika/nacos/springcloud/autoconfigure/SeikaDiscoveryRegister.class
+io/zeika/nacos/springcloud/scaner.class

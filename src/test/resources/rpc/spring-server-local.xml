@@ -6,11 +6,11 @@ http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
  	 
  	<import resource="spring-processor.xml"/>  
 	
-	<bean id="mqServer" class="io.zbus.mq.MqServer">
+	<bean id="mqServer" class="io.seika.mq.MqServer">
 		<constructor-arg value="rpc/zbus.xml"/>
 	</bean> 
 	
-	<bean class="io.zbus.rpc.RpcServer"> 
+	<bean class="io.seika.rpc.RpcServer">
 		<property name="mqServer" ref="mqServer"/>  <!-- embed RpcServer in MqServer --> 
 	</bean>   
 	

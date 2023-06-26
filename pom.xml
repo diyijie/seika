@@ -4,8 +4,8 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<packaging>jar</packaging>
-	<groupId>io.zbus</groupId>
-	<artifactId>seiba</artifactId>
+	<groupId>io.seika</groupId>
+	<artifactId>seika</artifactId>
 	<version>1.0.0</version>
 	<name>zbus</name>
 	<description>a lightweight yet powerful RPC and messaging framework to build service bus</description>
@@ -259,6 +259,4 @@
 			</distributionManagement>
 		</profile>
 	</profiles>
-
-
 </project>

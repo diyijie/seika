@@ -6,7 +6,7 @@ http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
  	 
  	<import resource="spring-processor.xml"/>  
  	
-	<bean class="io.zbus.rpc.RpcServer"> 
+	<bean class="io.seika.rpc.RpcServer">
 		<property name="mqServerAddress" value="localhost:15555"/>  
 		<property name="mq" value="/"/>   
 	</bean>  

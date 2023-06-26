@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
 http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">  
 	
-	<bean id="client" class="io.zbus.rpc.RpcClient">
+	<bean id="client" class="io.seika.rpc.RpcClient">
 		<constructor-arg type="java.lang.String" value="localhost:15555"/>  
 		
 		<property name="apiKey" value="2ba912a8-4a8d-49d2-1a22-198fd285cb06"/>
@@ -13,7 +13,7 @@ http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 	
 	<bean factory-bean="client" factory-method="createProxy">
 		<constructor-arg type="java.lang.String" value="/example"/> 
-		<constructor-arg type="java.lang.Class" value="io.zbus.rpc.biz.InterfaceExample"/> 
+		<constructor-arg type="java.lang.Class" value="io.seika.rpc.biz.InterfaceExample"/>
 	</bean> 
 	
 </beans>

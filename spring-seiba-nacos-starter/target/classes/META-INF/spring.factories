@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
- io.zbus.nacos.autoconfigure.SeikaDiscoveryAutoConfiguration
+ io.zeika.nacos.springcloud.autoconfigure.SeikaDiscoveryAutoConfiguration
