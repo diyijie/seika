@@ -1,14 +1,12 @@
 package io.seika;
 
-import io.netty.util.internal.shaded.org.jctools.queues.MpscArrayQueue;
+import io.seika.mq.MqClient;
 import io.seika.mq.MqServer;
 import io.seika.mq.MqServerConfig;
 import io.seika.mq.Protocol;
 import io.seika.transport.DataHandler;
 import io.seika.transport.EventHandler;
 import io.seika.transport.Message;
-import io.seika.mq.MqClient;
-import jdk.internal.net.http.common.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +50,7 @@ public class ZbusSeikaMq implements EventHandler {
 		return client ;
 	}
 	private ExecutorService rePubExecutorService=  Executors.newSingleThreadExecutor();
-	private MpscArrayQueue<Pair<Message, DataHandler>> queue= new MpscArrayQueue<>(1000);
+	//private MpscArrayQueue<Pair<Message, DataHandler>> queue= new MpscArrayQueue<>(1000);
 
 	public ZbusSeikaMq(String address, String apiKey, String secretKey){
 		clientSub = newc(address,apiKey,secretKey);
@@ -110,7 +108,7 @@ public class ZbusSeikaMq implements EventHandler {
 				dataHandler.handle(res);
 			}
 		},e->{
-			queue.add(Pair.pair(msg,dataHandler));
+		//	queue.add(Pair.pair(msg,dataHandler));
 		});
 
 	}

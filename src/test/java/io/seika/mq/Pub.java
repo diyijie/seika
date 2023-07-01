@@ -1,7 +1,39 @@
 package io.seika.mq;
 
 import io.seika.ZbusSeikaMq;
+import io.seika.transport.DataHandler;
+import io.seika.transport.Message;
 
+import java.io.IOException;
+class A{
+	String a ;
+	Integer b ;
+	int c 		;
+
+	public String getA() {
+		return a;
+	}
+
+	public void setA(String a) {
+		this.a = a;
+	}
+
+	public Integer getB() {
+		return b;
+	}
+
+	public void setB(Integer b) {
+		this.b = b;
+	}
+
+	public int getC() {
+		return c;
+	}
+
+	public void setC(int c) {
+		this.c = c;
+	}
+}
 public class Pub {
 
 	public static MqClient buildInproClient() {
@@ -13,10 +45,41 @@ public class Pub {
 	public static void main(String[] args) throws Exception {
 		ZbusSeikaMq dd =new ZbusSeikaMq("ws://127.0.0.1:15555","","");
 		//dd =new MqSpringClient(new MqServerConfig("./conf/zbus.xml"));
-		for (int i = 0; i < 1000000; i++) {
-			dd.Pub("MyMQQ",i,"000",null);
-			//Thread.sleep(300);
-		}
+		long st = System.currentTimeMillis();
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				for (int i = 0; i <=100; i++) {
+					try {
+						String ss= "xxx"+i;
+						A aaa = new A();
+						aaa.a=i+"xxxx";
+								aaa.c =i
+										;
+								aaa.b = i ;
+
+						dd.Pub("MyMQQ",ss,"000",null);
+					} catch (IOException e) {
+						throw new RuntimeException(e);
+					} catch (InterruptedException e) {
+						throw new RuntimeException(e);
+					}
+					//Thread.sleep(300);
+				}
+			}
+		}).start();
+		dd.Sub("MyMQQ", "000", new DataHandler<Message>() {
+			@Override
+			public void handle(Message data) throws Exception {
+				//System.out.println(data);
+
+				if (data.getBody().toString().equals("xxx100")){
+					long ds = System.currentTimeMillis() - st;
+					System.out.printf("%d毫秒" ,ds);
+				}
+			}
+		});
+		//Thread.sleep(15000);
 		System.out.println("----end ");
 //		MqClient client = new MqClient("ws://127.0.0.1:15555");
 //

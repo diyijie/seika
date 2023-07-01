@@ -1,57 +1,31 @@
 package io.seika.transport.http;
 
-import java.io.IOException;
-import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map.Entry;
-
-import io.seika.kit.HttpKit;
-import io.seika.kit.JsonKit;
-import io.seika.transport.Message;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
-import io.netty.handler.codec.http.DefaultFullHttpRequest;
-import io.netty.handler.codec.http.DefaultFullHttpResponse;
-import io.netty.handler.codec.http.FullHttpMessage;
-import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpMethod;
-import io.netty.handler.codec.http.HttpObjectAggregator;
-import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.HttpResponse;
-import io.netty.handler.codec.http.HttpResponseStatus;
-import io.netty.handler.codec.http.HttpServerCodec;
-import io.netty.handler.codec.http.HttpVersion;
+import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.cors.CorsConfig;
 import io.netty.handler.codec.http.cors.CorsConfigBuilder;
 import io.netty.handler.codec.http.cors.CorsHandler;
-import io.netty.handler.codec.http.multipart.Attribute;
-import io.netty.handler.codec.http.multipart.DiskAttribute;
-import io.netty.handler.codec.http.multipart.DiskFileUpload;
-import io.netty.handler.codec.http.multipart.FileUpload;
-import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
+import io.netty.handler.codec.http.multipart.*;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder.EndOfDataDecoderException;
-import io.netty.handler.codec.http.multipart.InterfaceHttpData;
 import io.netty.handler.codec.http.multipart.InterfaceHttpData.HttpDataType;
-import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
-import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
-import io.netty.handler.codec.http.websocketx.PingWebSocketFrame;
-import io.netty.handler.codec.http.websocketx.PongWebSocketFrame;
-import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
-import io.netty.handler.codec.http.websocketx.WebSocketFrame;
-import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
-import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
+import io.netty.handler.codec.http.websocketx.*;
 import io.netty.handler.ssl.SslHandler;
+import io.seika.kit.JsonKit;
+import io.seika.transport.Message;
 import io.seika.transport.Server;
 import io.seika.transport.http.Http.FormData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map.Entry;
 
 /**
  * 
@@ -189,16 +163,26 @@ public class HttpWsServer extends Server {
 				byte[] bytes = decodeWebSocketFrame(ctx, (WebSocketFrame)obj);
 				if(bytes != null) {//ws close may be null
 					Message msg = JsonKit.parseObject(bytes, Message.class);
-					if(!HttpKit.isText(msg.getHeader(Http.CONTENT_TYPE))) {
-						if(msg.getBody() instanceof String) { //NOT TEXT data, but body String typed
-							try {
-								byte[] body = Base64.getDecoder().decode((String)msg.getBody());
-								msg.setBody(body);
-							}catch (Exception e) { 
-								//ignore
-							} 
-						}
-					}
+//					if(!HttpKit.isText(msg.getHeader(Http.CONTENT_TYPE))) {
+//						if(msg.getBody() instanceof String) { //NOT TEXT data, but body String typed
+//							try {
+//								String orig = (String) msg.getBody();
+//								//这是一个bug 不懂原来的作者为啥转一次 为了jS解析？？？
+//								//这里为了js解析？单纯传递字符过来会出问题 数字可以 如果是body 是json没问题
+//								byte[] body = Base64.getDecoder().decode(java.lang.String.valueOf(((String) msg.getBody())));
+//								//因为之后会转换 先尝试下会不会失败
+//								String afs = new String(JsonKit.toJSONBytes(body));
+//
+//								if (afs.equals(orig)){
+//									msg.setBody(body);
+//								}else{
+//									throw new RuntimeException("转换后内容不通过"+ orig+" >>>"+afs);
+//								}
+//							}catch (Exception e) {
+//								System.out.println(e);
+//							}
+//						}
+//					}
 					if(msg != null){
 						out.add(msg);
 					}

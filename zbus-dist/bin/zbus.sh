@@ -6,7 +6,7 @@ fi
 ZBUS_HOME=../
 JAVA_OPTS="-Dfile.encoding=UTF-8 -server -Xms64m -Xmx1024m -XX:+UseParallelGC"
 JAVA_OPTS="-Dfile.encoding=UTF-8"
-MAIN_CLASS=io.zbus.mq.MqServer
+MAIN_CLASS=io.seika.mq.MqServer
 if [ -z "$1" ]
   then
     MAIN_OPTS="-conf ../conf/zbus.xml"

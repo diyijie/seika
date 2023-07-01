@@ -3,7 +3,7 @@
 	
 	<!-- address open to public, with ssl and auth secured if configured --> 
 	<public>
-		<address>0.0.0.0:15556</address> <!-- empty to disable -->
+		<address>0.0.0.0:15555</address> <!-- empty to disable -->
 		<sslEnabled certFile="ssl/zbus.crt" keyFile="ssl/zbus.key">false</sslEnabled> 
 		
 <!--		 use embedded auth 
