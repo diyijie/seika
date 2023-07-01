@@ -49,14 +49,14 @@ public class Pub {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				for (int i = 0; i <=100; i++) {
+				for (int i = 0; i <=5000; i++) {
 					try {
 						String ss= "xxx"+i;
-						A aaa = new A();
-						aaa.a=i+"xxxx";
-								aaa.c =i
-										;
-								aaa.b = i ;
+//						A aaa = new A();
+//						aaa.a=i+"xxxx";
+//								aaa.c =i
+//										;
+//								aaa.b = i ;
 
 						dd.Pub("MyMQQ",ss,"000",null);
 					} catch (IOException e) {
@@ -73,7 +73,7 @@ public class Pub {
 			public void handle(Message data) throws Exception {
 				//System.out.println(data);
 
-				if (data.getBody().toString().equals("xxx100")){
+				if (data.getBody().toString().equals("xxx5000")){
 					long ds = System.currentTimeMillis() - st;
 					System.out.printf("%d毫秒" ,ds);
 				}
