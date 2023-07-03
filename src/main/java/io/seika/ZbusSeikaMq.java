@@ -108,6 +108,7 @@ public class ZbusSeikaMq implements EventHandler {
 				dataHandler.handle(res);
 			}
 		},e->{
+			logger.warn("{}",e);
 		//	queue.add(Pair.pair(msg,dataHandler));
 		});
 
@@ -128,9 +129,9 @@ public class ZbusSeikaMq implements EventHandler {
 
 		clientSub.invoke(sub, data->{
 			if (200==data.getStatus()){
-				logger.debug("%s",data);
+				logger.debug("{}",data.getBody());
 			}else{
-				logger.warn("%s",data);
+				logger.warn("{}",data.getBody());
 			}
  		},e -> {
 			logger.error("sub fail",e);

@@ -1,6 +1,7 @@
 package io.seika.mq;
 
 import io.seika.ZbusSeikaMq;
+import io.seika.kit.JsonKit;
 import io.seika.transport.DataHandler;
 import io.seika.transport.Message;
 
@@ -8,7 +9,7 @@ import java.io.IOException;
 class A{
 	String a ;
 	Integer b ;
-	int c 		;
+	long c 		;
 
 	public String getA() {
 		return a;
@@ -26,11 +27,11 @@ class A{
 		this.b = b;
 	}
 
-	public int getC() {
+	public long getC() {
 		return c;
 	}
 
-	public void setC(int c) {
+	public void setC(long c) {
 		this.c = c;
 	}
 }
@@ -46,40 +47,127 @@ public class Pub {
 		ZbusSeikaMq dd =new ZbusSeikaMq("ws://127.0.0.1:15555","","");
 		//dd =new MqSpringClient(new MqServerConfig("./conf/zbus.xml"));
 		long st = System.currentTimeMillis();
+		int nnnn=300;
+		int msgn=100;
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				for (int i = 0; i <=5000; i++) {
-					try {
-						String ss= "xxx"+i;
-//						A aaa = new A();
-//						aaa.a=i+"xxxx";
-//								aaa.c =i
-//										;
-//								aaa.b = i ;
+				while (true) {
+					for (int i = 1; i <= nnnn; i++) {
+						String ss = "xxx" + i;
+						A aaa = new A();
+						aaa.a = i + "xxxx";
+						aaa.c = System.currentTimeMillis()
+						;
+						aaa.b = i;
 
-						dd.Pub("MyMQQ",ss,"000",null);
-					} catch (IOException e) {
-						throw new RuntimeException(e);
+
+						int finalI2 = i;
+
+						for (int j = 1; j <= msgn; j++) {
+							aaa.c = j;
+							int finalJ = j;
+							int finalI = finalI2;
+							try {
+								dd.Pub("MyMQQ", aaa, "000" + finalI, dh -> {
+									if (finalJ == msgn) {
+
+									//	System.out.println(dh.getBody().toString()+ finalI +"--"+ finalJ);
+										if (finalI == nnnn) {
+											System.out.println("发送完成");
+										}
+									}
+								});
+							} catch (IOException e) {
+								throw new RuntimeException(e);
+							} catch (InterruptedException e) {
+								throw new RuntimeException(e);
+							}
+						}
+					}
+					try {
+						Thread.sleep(300);
 					} catch (InterruptedException e) {
 						throw new RuntimeException(e);
 					}
-					//Thread.sleep(300);
+
 				}
+
+
+
+
+			}
+		}
+		).start(); ;
+		ZbusSeikaMq dd2 =new ZbusSeikaMq("ws://127.0.0.1:15555","","");
+
+		new Thread(() -> {
+			final long[] lastn = {0};
+
+			for (int i = 0; i <=nnnn; i++) {
+				try {
+					dd.Sub("MyMQQ", "000"+i, new DataHandler<Message>() {
+						@Override
+						public void handle(Message data) throws Exception {
+
+
+							A aa = JsonKit.parseObject(data.getBody().toString(), A.class);
+
+							if (aa.b==nnnn && aa.c==msgn){
+								// System.out.println(data.getBody());
+
+								long st2= System.currentTimeMillis();
+								//300000消息用时162秒 3000 channel
+								//300000消息用时25秒 300 channel
+								//300000消息用时29秒 30 channel
+
+								System.out.printf("M1收到消息，%d消息用时%d秒\n",nnnn*msgn,(st2-st- lastn[0])/1000);
+								lastn[0] = st2-st;
+							}
+						}
+					});
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				} catch (InterruptedException e) {
+					throw new RuntimeException(e);
+				}
+				//Thread.sleep(300);
 			}
 		}).start();
-		dd.Sub("MyMQQ", "000", new DataHandler<Message>() {
-			@Override
-			public void handle(Message data) throws Exception {
-				//System.out.println(data);
+		new Thread(() -> {
+			final long[] lastn = {0};
 
-				if (data.getBody().toString().equals("xxx5000")){
-					long ds = System.currentTimeMillis() - st;
-					System.out.printf("%d毫秒" ,ds);
+			for (int i = 0; i <=nnnn; i++) {
+				try {
+					dd2.Sub("MyMQQ", "000"+i, new DataHandler<Message>() {
+						@Override
+						public void handle(Message data) throws Exception {
+
+
+							A aa = JsonKit.parseObject(data.getBody().toString(), A.class);
+
+							if (aa.b==nnnn && aa.c==msgn){
+								// System.out.println(data.getBody());
+
+								long st2= System.currentTimeMillis();
+								//300000消息用时162秒 3000 channel
+								//300000消息用时25秒 300 channel
+								//300000消息用时29秒 30 channel
+
+								System.out.printf("M2收到消息，%d消息用时%d秒\n",nnnn*msgn,(st2-st- lastn[0])/1000);
+								lastn[0] = st2-st;
+							}
+						}
+					});
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				} catch (InterruptedException e) {
+					throw new RuntimeException(e);
 				}
+				//Thread.sleep(300);
 			}
-		});
-		//Thread.sleep(15000);
+		}).start();
+ 		//Thread.sleep(15000);
 		System.out.println("----end ");
 //		MqClient client = new MqClient("ws://127.0.0.1:15555");
 //
