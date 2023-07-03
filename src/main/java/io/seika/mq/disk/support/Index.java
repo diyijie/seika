@@ -16,8 +16,8 @@ public class Index extends MappedFile {
 	public static final String BlockSuffix = ".sk";
 	public static final String BlockDir = "data";
 	public static final String ReaderDir = "reader"; 
-	public static final int BlockMaxCount = 102400;
-	public static final long BlockMaxSize = 64 * 1024 * 10240; // default to 64M
+	public static final int BlockMaxCount = 1024;
+	public static final long BlockMaxSize = 64 * 1024 * 1024; // default to 64M
 	
 
 	private static final int OffsetSize = 28; 
