@@ -7,7 +7,7 @@
 	<groupId>io.seika</groupId>
 	<artifactId>seika</artifactId>
 	<version>1.0.0</version>
-	<name>zbus</name>
+	<name>seika</name>
 	<description>a lightweight yet powerful RPC and messaging framework to build service bus</description>
 
 	<licenses>
