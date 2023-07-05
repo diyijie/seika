@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 /** 
  *  
@@ -151,7 +152,7 @@ public interface MessageQueue {
 	
 	public static abstract class AbstractMessageQueue implements MessageQueue {
 		private static final Logger logger = LoggerFactory.getLogger(AbstractMessageQueue.class);  
-		protected  Map<String, ChannelReader> channelTable = new  HashMap<>();
+		protected  Map<String, ChannelReader> channelTable = new ConcurrentHashMap<>();
 		protected final String name;
 		
 		public AbstractMessageQueue(String name) {

@@ -48,7 +48,7 @@ public class Pub {
 		//dd =new MqSpringClient(new MqServerConfig("./conf/zbus.xml"));
 		long st = System.currentTimeMillis();
 		int nnnn=500;
-		int msgn=20;
+		int msgn=200;
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
