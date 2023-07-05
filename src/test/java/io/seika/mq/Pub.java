@@ -47,8 +47,8 @@ public class Pub {
 		ZbusSeikaMq dd =new ZbusSeikaMq("ws://127.0.0.1:15555","","");
 		//dd =new MqSpringClient(new MqServerConfig("./conf/zbus.xml"));
 		long st = System.currentTimeMillis();
-		int nnnn=300;
-		int msgn=100;
+		int nnnn=10;
+		int msgn=100000;
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -85,11 +85,12 @@ public class Pub {
 							}
 						}
 					}
-					try {
-						Thread.sleep(300);
-					} catch (InterruptedException e) {
-						throw new RuntimeException(e);
-					}
+					break;
+//					try {
+//						Thread.sleep(300);
+//					} catch (InterruptedException e) {
+//						throw new RuntimeException(e);
+//					}
 
 				}
 
@@ -98,7 +99,7 @@ public class Pub {
 
 			}
 		}
-		);//.start(); ;
+		).start(); ;
 		ZbusSeikaMq dd2 =new ZbusSeikaMq("ws://127.0.0.1:15555","","");
 
 		new Thread(() -> {
@@ -112,7 +113,7 @@ public class Pub {
 
 
 							A aa = JsonKit.parseObject(data.getBody().toString(), A.class);
-							  System.out.println(data.getBody());
+							  System.out.println("M1收到消息，....."+data.getBody());
 
 							if (aa.b==nnnn && aa.c==msgn){
 
@@ -145,6 +146,8 @@ public class Pub {
 
 
 							A aa = JsonKit.parseObject(data.getBody().toString(), A.class);
+							System.out.println("M2收到消息，....."+data.getBody());
+
 
 							if (aa.b==nnnn && aa.c==msgn){
 								// System.out.println(data.getBody());
@@ -166,7 +169,7 @@ public class Pub {
 				}
 				//Thread.sleep(300);
 			}
-		});//.start();
+		}).start();
  		Thread.sleep(15000);
 		System.out.println("----end ");
 //		MqClient client = new MqClient("ws://127.0.0.1:15555");
