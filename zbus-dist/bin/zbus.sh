@@ -4,7 +4,7 @@ if [ -z ${JAVA_HOME} ]; then
 JAVA_HOME=/apps/jdk
 fi
 ZBUS_HOME=../
-JAVA_OPTS="-Dfile.encoding=UTF-8 -server -Xms64m -Xmx4096m -XX:+UseParallelGC"
+JAVA_OPTS="-Dfile.encoding=UTF-8 -server -Xms1024m -Xmx4096m -XX:+UseParallelGC"
 #JAVA_OPTS="-Dfile.encoding=UTF-8"
 MAIN_CLASS=io.seika.mq.MqServer
 if [ -z "$1" ]
@@ -15,7 +15,7 @@ else
 fi
 
 LIB_OPTS="$ZBUS_HOME/lib/*:$ZBUS_HOME/classes:$ZBUS_HOME/*:$ZBUS_HOME/conf/"
-nohup $JAVA_HOME/bin/java $JAVA_OPTS -cp $LIB_OPTS $MAIN_CLASS $MAIN_OPTS > /dev/null 2>&1&
-#$JAVA_HOME/bin/java $JAVA_OPTS -cp $LIB_OPTS $MAIN_CLASS $MAIN_OPTS
+#nohup $JAVA_HOME/bin/java $JAVA_OPTS -cp $LIB_OPTS $MAIN_CLASS $MAIN_OPTS > /dev/null 2>&1&
+$JAVA_HOME/bin/java $JAVA_OPTS -cp $LIB_OPTS $MAIN_CLASS $MAIN_OPTS
 
 

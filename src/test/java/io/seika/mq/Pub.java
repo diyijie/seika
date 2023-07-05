@@ -47,8 +47,8 @@ public class Pub {
 		ZbusSeikaMq dd =new ZbusSeikaMq("ws://127.0.0.1:15555","","");
 		//dd =new MqSpringClient(new MqServerConfig("./conf/zbus.xml"));
 		long st = System.currentTimeMillis();
-		int nnnn=10;
-		int msgn=100000;
+		int nnnn=500;
+		int msgn=20;
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -79,12 +79,13 @@ public class Pub {
 									}
 								});
 							} catch (IOException e) {
-								throw new RuntimeException(e);
+							    e.printStackTrace();
 							} catch (InterruptedException e) {
-								throw new RuntimeException(e);
+								e.printStackTrace();
 							}
 						}
 					}
+					System.out.println("发送退出！！！！！！！");
 					break;
 //					try {
 //						Thread.sleep(300);
@@ -128,9 +129,9 @@ public class Pub {
 						}
 					});
 				} catch (IOException e) {
-					throw new RuntimeException(e);
+					e.printStackTrace();
 				} catch (InterruptedException e) {
-					throw new RuntimeException(e);
+					e.printStackTrace();
 				}
 				//Thread.sleep(300);
 			}
@@ -163,9 +164,9 @@ public class Pub {
 						}
 					});
 				} catch (IOException e) {
-					throw new RuntimeException(e);
+				 e.printStackTrace();
 				} catch (InterruptedException e) {
-					throw new RuntimeException(e);
+					e.printStackTrace();
 				}
 				//Thread.sleep(300);
 			}

@@ -1,16 +1,16 @@
 package io.seika.mq.model;
 
+import io.seika.mq.Protocol;
+import io.seika.transport.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import io.seika.mq.Protocol;
-import io.seika.transport.Message;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /** 
  *  
@@ -73,7 +73,7 @@ public interface MessageQueue {
 	/**
 	 * Batch write message to queue
 	 * 
-	 * @param message message list
+	 * @param  messages list
 	 */
 	void write(List<Message> messages); 
 	
@@ -151,7 +151,7 @@ public interface MessageQueue {
 	
 	public static abstract class AbstractMessageQueue implements MessageQueue {
 		private static final Logger logger = LoggerFactory.getLogger(AbstractMessageQueue.class);  
-		protected Map<String, ChannelReader> channelTable = new HashMap<>(); 
+		protected  Map<String, ChannelReader> channelTable = new  HashMap<>();
 		protected final String name;
 		
 		public AbstractMessageQueue(String name) {
@@ -233,7 +233,7 @@ public interface MessageQueue {
 		
 		@Override
 		public Iterator<String> channelIterator() { 
-			return channelTable.keySet().iterator();
+			return channelTable.keySet().stream().iterator();
 		}
 	 
 		@Override

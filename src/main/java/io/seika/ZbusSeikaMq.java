@@ -23,8 +23,16 @@ public class ZbusSeikaMq implements EventHandler {
 	private static Map<String, Boolean> created = new ConcurrentHashMap<>();
 	private static final Logger logger = LoggerFactory.getLogger(ZbusSeikaMq.class);
 
+	private String address ;
+
+	public String getAddress() {
+		return address;
+	}
+ 
+
 	public ZbusSeikaMq(MqServerConfig config ){
 		MqServer server = new MqServer(config);
+		address = config.publicServer.getAddress();
  		client= newmq(server);
 		clientSub =newmq(server);
 	}
@@ -38,6 +46,7 @@ public class ZbusSeikaMq implements EventHandler {
 	}
 	private MqClient newc(String address,String apiKey,String secretKey){
 		MqClient client = new MqClient(address);
+
  //		apiKey = "2ba912a8-4a8d-49d2-1a22-198fd285cb06";
 //		secretKey = "461277322-943d-4b2f-b9b6-3f860d746ffd";
 		if (apiKey!=null && secretKey!=null && !"".equals(apiKey) && !"".equals(secretKey)){
@@ -47,6 +56,7 @@ public class ZbusSeikaMq implements EventHandler {
 		}
 		client.heartbeat(30, TimeUnit.SECONDS);
 		client.onOpen(this);
+		this.address = address;
 		return client ;
 	}
 	private ExecutorService rePubExecutorService=  Executors.newSingleThreadExecutor();
@@ -115,7 +125,11 @@ public class ZbusSeikaMq implements EventHandler {
 	}
 
 	public void  Sub(String mq,String channel,DataHandler<Message> dataHandler) throws IOException, InterruptedException {
-		this.create(mq,channel);
+		try {
+			this.create(mq,channel);
+		}catch (Exception e){
+			throw e;
+		}
 
 		Message sub = new Message();
 		sub.setHeader("cmd", "sub"); //Subscribe on MQ/Channel
@@ -143,6 +157,14 @@ public class ZbusSeikaMq implements EventHandler {
 	public void handle() throws Exception {
 // 如果不重新订阅那么 mq服务器重启后 会收不到消息了
 		clientSub.getHandlersCache().forEach(h->{
+			try {
+				this.create(h.mq,h.channel);
+			}  catch (IOException ex) {
+					throw new RuntimeException(ex);
+			} catch (InterruptedException ex) {
+					throw new RuntimeException(ex);
+			}
+
 			Message sub = new Message();
 			sub.setHeader("cmd", "sub"); //Subscribe on MQ/Channel
 			sub.setHeader("mq", h.mq);
