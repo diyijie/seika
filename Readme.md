@@ -22,6 +22,7 @@ class A impl xx{
     @Filter("xx) 执行该方法前的普通过滤器
     method（）{}
 }
+xx要写注解 SeikaServiceApi
 过滤器的定义  分前置 后置 exception 普通
 @Filterdef{
 
@@ -36,5 +37,5 @@ zbus:
         address: 127.0.0.1:15555
         
         rpcPort //如果提供了相关服务需要填写端口 默认15555 
-
+        http://127.0.0.1:15555/doc 
         
