@@ -7,7 +7,7 @@ SET JAVA_OPTS=-server -Dfile.encoding=UTF8 -Xms64m -Xmx1024m -XX:+UseParallelGC
 SET MAIN_CLASS=io.zbus.mq.MqServer
 
 IF "%1" == "" ( 
-	SET MAIN_OPTS=-conf ../conf/zbus.xml 
+	SET MAIN_OPTS=-conf ../conf/seika.xml 
 ) ELSE ( 
 	SET MAIN_OPTS=-conf %1 
 ) 

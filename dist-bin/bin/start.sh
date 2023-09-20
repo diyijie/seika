@@ -9,7 +9,7 @@ JAVA_OPTS="-Dfile.encoding=UTF-8 -server -Xms1024m -Xmx4096m -XX:+UseParallelGC"
 MAIN_CLASS=io.seika.mq.MqServer
 if [ -z "$1" ]
   then
-    MAIN_OPTS="-conf ../conf/zbus.xml"
+    MAIN_OPTS="-conf ../conf/seika.xml"
 else
 	MAIN_OPTS="-conf $1"
 fi

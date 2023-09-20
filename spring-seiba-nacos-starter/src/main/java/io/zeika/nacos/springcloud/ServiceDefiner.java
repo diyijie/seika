@@ -47,9 +47,18 @@ public class ServiceDefiner implements BeanFactoryPostProcessor {
 
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException{
         BeanDefinitionRegistry registry=(BeanDefinitionRegistry)beanFactory;
+        //  main package
+      //  List<String> ps = AutoConfigurationPackages.get(beanFactory.getBean(ApplicationContext.class).getAutowireCapableBeanFactory());
+        String bp ="";
+//        if( ps.size()>0 ){
+//            String[] psarr = ps.get(0).split(".", 3);
+//            if (psarr.length >=2) {
+//                bp=psarr[0]+"."+psarr[1];
+//            }
+//        }
 
         scaner scan=new scaner(registry);
-        Set<BeanDefinition> cpmps = scan.findCandidateComponents("");
+        Set<BeanDefinition> cpmps = scan.findCandidateComponents(bp);
 
         for(BeanDefinition beanDefinition:cpmps){
             String clzstr = beanDefinition.getBeanClassName();

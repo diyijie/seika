@@ -1,23 +1,22 @@
 package io.seika.mq;
- 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import io.seika.rpc.RpcProcessor;
-import io.seika.rpc.StaticResource;
-import io.seika.transport.Ssl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.cors.CorsConfigBuilder;
 import io.netty.handler.ssl.SslContext;
 import io.seika.kit.ConfigKit;
 import io.seika.kit.StrKit;
+import io.seika.rpc.RpcProcessor;
+import io.seika.rpc.StaticResource;
+import io.seika.transport.Ssl;
 import io.seika.transport.http.HttpWsServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MqServer extends HttpWsServer {
 	private static final Logger logger = LoggerFactory.getLogger(MqServer.class); 
@@ -196,7 +195,7 @@ public class MqServer extends HttpWsServer {
 	 
 	
 	public static void main(String[] args) {
-		String configFile = ConfigKit.option(args, "-conf", "conf/zbus.xml"); 
+		String configFile = ConfigKit.option(args, "-conf", "conf/seika.xml");
 		
 		final MqServer server;
 		try{ 
