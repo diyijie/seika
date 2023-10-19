@@ -9,7 +9,6 @@ import io.zeika.nacos.springcloud.properties.Register;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-
 public class  SeikaRpcClientFactoryProxy<T> implements FactoryBean<T> {
      private BeanDefinitionRegistry factory;
    private NamingService namingService;

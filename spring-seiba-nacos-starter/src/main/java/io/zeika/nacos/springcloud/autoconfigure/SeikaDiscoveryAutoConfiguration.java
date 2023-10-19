@@ -17,7 +17,7 @@
 package io.zeika.nacos.springcloud.autoconfigure;
 
 import io.zeika.nacos.springcloud.SeikaRpcClient;
-import io.zeika.nacos.springcloud.ServiceDefiner;
+import io.zeika.nacos.springcloud.ServiceRegister;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -33,8 +33,12 @@ public class SeikaDiscoveryAutoConfiguration {
  	public SeikaRpcClient seikaRpcClient() {
 		return new SeikaRpcClient();
 	}
-	@Bean
-	public ServiceDefiner definer(){
-		return new ServiceDefiner();
+//	@Bean
+//	public ServiceDefiner definer(){
+//		return new ServiceDefiner();
+//	}
+		@Bean
+	public ServiceRegister definer(){
+		return new ServiceRegister();
 	}
 }

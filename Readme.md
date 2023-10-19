@@ -22,7 +22,9 @@ class A impl xx{
     @Filter("xx) 执行该方法前的普通过滤器
     method（）{}
 }
-xx要写注解 SeikaServiceApi
+接口上面要写注解 SeikaServiceApi
+@SeikaServiceApi("user") user是要调用的项目名称
+
 过滤器的定义  分前置 后置 exception 普通
 @Filterdef{
 
