@@ -29,15 +29,29 @@ class A impl xx{
 @Filterdef{
 
 }
-
+```
+           <dependency>
+                    <groupId>io.seika</groupId>
+                    <artifactId>spring-seika-nacos-starter</artifactId>
+                    <version>1.0.0</version>
+                </dependency>
+                
+                
+```
+zbus:
+    seika:
+    #    enabled: true //启用消息队列
+    #    address:
+        rpcPort: 25555 //启用rpc时候的端口
+    #    apiKey:
+    #    secretKey:
 zbus:
     seika:
         apiKey
         secretKey
-
         enabled: true //use mq 
         address: 127.0.0.1:15555
         
         rpcPort //如果提供了相关服务需要填写端口 默认15555 
-        http://127.0.0.1:15555/doc 
+        http://127.0.0.1:15555/doc  所实现该服务的进程
         
