@@ -184,8 +184,9 @@
 		</plugins>
 	</build>
 
-	<!-- mvn clean deploy -P release -->
+	<!-- mvn clean deploy -P release -Dmaven.test.skip=true -->
 	<profiles>
+
 		<profile>
 			<id>release</id>
 			<build>
@@ -200,62 +201,84 @@
 					</resource>
 				</resources>
 
-				<plugins>
-					<!-- Source -->
+			<plugins>
+<!--					&lt;!&ndash; Source &ndash;&gt;-->
+<!--					<plugin>-->
+<!--						<groupId>org.apache.maven.plugins</groupId>-->
+<!--						<artifactId>maven-source-plugin</artifactId>-->
+<!--						<version>2.2.1</version>-->
+<!--						<executions>-->
+<!--							<execution>-->
+<!--								<phase>package</phase>-->
+<!--								<goals>-->
+<!--									<goal>jar-no-fork</goal>-->
+<!--								</goals>-->
+<!--							</execution>-->
+<!--						</executions>-->
+<!--					</plugin>-->
+<!--					<plugin>-->
+<!--						<groupId>org.apache.maven.plugins</groupId>-->
+<!--						<artifactId>maven-javadoc-plugin</artifactId>-->
+<!--						<version>2.9.1</version>-->
+<!--						<executions>-->
+<!--							<execution>-->
+<!--								<phase>package</phase>-->
+<!--								<goals>-->
+<!--									<goal>jar</goal>-->
+<!--								</goals>-->
+<!--								<configuration>-->
+<!--									<additionalparam>-Xdoclint:none</additionalparam>-->
+<!--								</configuration>-->
+<!--							</execution>-->
+<!--						</executions>-->
+<!--					</plugin>-->
+<!--					<plugin>-->
+<!--						<groupId>org.apache.maven.plugins</groupId>-->
+<!--						<artifactId>maven-gpg-plugin</artifactId>-->
+<!--						<version>1.5</version>-->
+<!--						<executions>-->
+<!--							<execution>-->
+<!--								<phase>verify</phase>-->
+<!--								<goals>-->
+<!--									<goal>sign</goal>-->
+<!--								</goals>-->
+<!--							</execution>-->
+<!--						</executions>-->
+<!--					</plugin>-->
 					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-source-plugin</artifactId>
-						<version>2.2.1</version>
+						<groupId>org.sonatype.plugins</groupId>
+						<artifactId>nexus-staging-maven-plugin</artifactId>
+						<version>1.5.1</version>
 						<executions>
 							<execution>
-								<phase>package</phase>
+								<id>default-deploy</id>
+								<phase>deploy</phase>
 								<goals>
-									<goal>jar-no-fork</goal>
+									<goal>deploy</goal>
 								</goals>
 							</execution>
 						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>2.9.1</version>
-						<executions>
-							<execution>
-								<phase>package</phase>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-								<configuration>
-									<additionalparam>-Xdoclint:none</additionalparam>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<!-- GPG -->
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.5</version>
-						<executions>
-							<execution>
-								<phase>verify</phase>
-								<goals>
-									<goal>sign</goal>
-								</goals>
-							</execution>
-						</executions>
+						<configuration>
+							<serverId>nexus-releases</serverId>
+							<nexusUrl>http://localhost:8081/nexus/</nexusUrl>
+							<skipStaging>true</skipStaging>
+						</configuration>
 					</plugin>
 				</plugins>
 			</build>
 			<distributionManagement>
-				<snapshotRepository>
-					<id>oss</id>
-					<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-				</snapshotRepository>
 				<repository>
-					<id>oss</id>
-					<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+					<!-- id要与setting.xml文件中配置的releases仓库id保持一致 -->
+					<id>nexus-releases</id>
+					<name>User Project Release</name>
+					<url>http://localhost:8081/repository/maven-releases/</url>
 				</repository>
+				<snapshotRepository>
+					<!-- id要与setting.xml文件中配置的snapshots仓库id保持一致 -->
+					<id>nexus-snapshots</id>
+					<name>User Project SNAPSHOTS</name>
+					<url>http://localhost:8081/repository/maven-snapshots/</url>
+				</snapshotRepository>
 			</distributionManagement>
 		</profile>
 	</profiles>
