@@ -1,9 +1,9 @@
 package io.seika.mq;
- 
-import java.util.ArrayList;
-import java.util.List;
 
 import io.seika.mq.model.Subscription;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public interface Protocol {  
 	//Parameter keys(Message main key-value pairs)
@@ -18,7 +18,7 @@ public interface Protocol {
 	public static final String PUB    = "pub";      //Publish message
 	public static final String SUB    = "sub";      //Subscribe message stream
 	public static final String TAKE   = "take";     //One-time read message from MQ 
-	public static final String ROUTE  = "route";    //Route message to specified sender client
+	public static final String ROUTE  = "route";    //Route message to specified sender client  用做rpc 。先调用者1.client->2.mq ->3.实现者serviceImpl client->4.mq 里面拿到了source->5. 在交给source
 	public static final String CREATE = "create";   //Create or Update
 	public static final String REMOVE = "remove";   //Remove MQ/Channel
 	public static final String QUERY  = "query";    //Query MQ/Channel 
