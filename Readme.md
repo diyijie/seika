@@ -10,25 +10,22 @@
 * 集成spring mq 、rpc 
 * 加入rpc的apikey校验
 
-//use  
+//use  mq
 @Resource
 ZbusSeikaMq client ;
 
 RPC 实现
-
+过滤器的定义  分前置 后置 exception 普通
+@Filterdef{ }
 @Route(exclude=true) //禁止 移除 不会注册到
 class A impl xx{
-    @Route("xx) //指定路径信息 不必要 seika会统一分装
+    //@Route("xx) //指定路径信息 不必要 seika会统一分装
     @Filter("xx) 执行该方法前的普通过滤器
     method（）{}
 }
-接口上面要写注解 SeikaServiceApi
-@SeikaServiceApi("user") user是要调用的项目名称
+1.添加接口 接口上面要写注解 @SeikaServiceApi("user") user是要调用的项目名称
+2.注册RegSeikaApi（{interface.class}）
 
-过滤器的定义  分前置 后置 exception 普通
-@Filterdef{
-
-}
 ```
            <dependency>
                     <groupId>io.seika</groupId>
