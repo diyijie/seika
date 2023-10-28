@@ -1,11 +1,12 @@
 package io.seika.transport;
 
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
 import io.seika.auth.RequestSign;
 import io.seika.transport.http.WebsocketClient;
 import io.seika.transport.inproc.InprocClient;
+
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 
@@ -16,6 +17,7 @@ import io.seika.transport.inproc.InprocClient;
  *
  */
 public class Client extends AbastractClient {
+	private AtomicBoolean connected = new AtomicBoolean(false);
 	protected AbastractClient support;
 	
 	public Client(String address) {
@@ -24,8 +26,12 @@ public class Client extends AbastractClient {
 
 	public Client(IoAdaptor ioAdaptor) {
 		support = new InprocClient(ioAdaptor);
-	} 
-	
+	}
+
+	public boolean connected() {
+		return connected.get();
+	}
+
 	@Override
 	protected void sendMessage0(Message data) { 
 		support.sendMessage0(data);
@@ -46,6 +52,7 @@ public class Client extends AbastractClient {
 	@Override
 	public void close() throws IOException {
 		support.close();
+		connected.set(false);
 	}
 
 	public void invoke(Message req, DataHandler<Message> dataHandler) {
@@ -96,6 +103,7 @@ public class Client extends AbastractClient {
 
 	public void onOpen(EventHandler onOpen) {
 		support.onOpen(onOpen);
+		connected.set(true);
 	}
 
 	public void onError(ErrorHandler onError) {
