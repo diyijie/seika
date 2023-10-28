@@ -25,6 +25,7 @@ public class RpcClient extends Client {
 	@Override
 	public void connect() {
 		this.onOpen(null);
+		this.onClose(null);
 		super.connect();
 	}
 
