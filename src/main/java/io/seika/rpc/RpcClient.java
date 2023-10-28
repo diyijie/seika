@@ -20,12 +20,18 @@ public class RpcClient extends Client {
 	public RpcClient(String address, String urlPrefix) {  
 		super(address);
 		this.urlPrefix = urlPrefix; 
-	}   
-	
+	}
+
+	@Override
+	public void connect() {
+		this.onOpen(null);
+		super.connect();
+	}
+
 	public RpcClient(IoAdaptor ioAdaptor) {
 		super(ioAdaptor);
-	} 
-	
+	}
+
 	public void setUrlPrefix(String urlPrefix) {
 		this.urlPrefix = urlPrefix;
 	}

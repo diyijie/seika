@@ -51,10 +51,17 @@ public class SeikaRpcClient implements InvocationHandler {
      * @param <T>
      * @return
      */
-    public static <T> T Of(String address, Class<T> clazz) {
-        return new SeikaRpcClient().Get(address, clazz);
+    public static <T> T Of(String  address, Class<T> clazz,String key,String sec) {
+        SeikaRpcClient s = new SeikaRpcClient();
+        s.properties = new SeikaProperties() ;
+        s.properties.setAddress(address);
+        s.properties.setApiKey(key);
+        s.properties.setSecretKey(sec);
+        return s.Get(address, clazz);
     }
-
+    public static <T> T Of(String  address, Class<T> clazz ) {
+        return Of(address,clazz,null,null) ;
+    }
     /**
      * 原始的rpc 可以判断是否连接成功等
      * @param address
@@ -72,6 +79,7 @@ public class SeikaRpcClient implements InvocationHandler {
         } else {
             rpc = rpcs.get(cacheKey);
         }
+        rpc.connect();
         if (properties != null) {
             if (!StringUtils.isBlank(properties.getApiKey()) && !StringUtils.isBlank(properties.getSecretKey())) {
                 rpc.setApiKey(properties.getApiKey());

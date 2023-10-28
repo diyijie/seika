@@ -7,6 +7,7 @@ import io.seika.transport.inproc.InprocClient;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
 
 /**
  * 
@@ -98,12 +99,17 @@ public class Client extends AbastractClient {
 	}
 
 	public void onClose(EventHandler onClose) {
-		support.onClose(onClose);
+		support.onClose(new connected(onClose, unused -> {
+			connected.set(false);
+			return null ;
+		}));
 	}
 
 	public void onOpen(EventHandler onOpen) {
-		support.onOpen(onOpen);
-		connected.set(true);
+		support.onOpen(new connected(onOpen, unused -> {
+			connected.set(true);
+			return null ;
+		}));
 	}
 
 	public void onError(ErrorHandler onError) {
@@ -124,3 +130,23 @@ public class Client extends AbastractClient {
 		support.setBeforeSend(beforeSend);
 	}
 }
+class connected implements  EventHandler{
+	private final Function<Void, Void> fn;
+	private  EventHandler eventHandler ;
+
+	public connected(EventHandler eventHandler, Function<Void,Void> fn) {
+		this.eventHandler = eventHandler;
+		this.fn = fn ;
+	}
+
+	@Override
+public void handle() throws Exception {
+			if (this.fn!=null){
+				this.fn.apply(null);
+
+			}
+			if (this.eventHandler!=null){
+				this.eventHandler.handle();
+			}
+		}
+		}
