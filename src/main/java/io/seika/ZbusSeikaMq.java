@@ -156,7 +156,7 @@ public class ZbusSeikaMq implements EventHandler {
 	@Override
 	public void handle() throws Exception {
 // 如果不重新订阅那么 mq服务器重启后 会收不到消息了
-		clientSub.getHandlersCache().forEach(h->{
+		clientSub.getHandlers().forEach(h->{
 			try {
 				this.create(h.mq,h.channel);
 			}  catch (IOException ex) {

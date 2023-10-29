@@ -22,16 +22,16 @@ public class MqClient extends Client {
 		public Integer window;
 		public DataHandler<Message> handler;
 	}
-	public List<MqHandler> getHandlersCache(){
-		  List<MqHandler> handlers = new ArrayList<>();
- 		for (MqHandler h:handlers
-			 ) {
-			MqHandler hh=new MqHandler();
-		    hh.mq = h.mq;
-			hh.channel = h.channel;
-			hh.window =h.window ;
-			handlers.add(hh);
-		 }
+	public List<MqHandler> getHandlers(){
+//		  List<MqHandler> handlerss = new ArrayList<>();
+// 		for (MqHandler h:handlers
+//			 ) {
+//			MqHandler hh=new MqHandler();
+//		    hh.mq = h.mq;
+//			hh.channel = h.channel;
+//			hh.window =h.window ;
+//			handlerss.add(hh);
+//		 }
 		 return handlers;
 	}
 
