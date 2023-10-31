@@ -10,10 +10,6 @@
 * 集成spring mq 、rpc 
 * 加入rpc的apikey校验
 
-//use  mq
-@Resource
-ZbusSeikaMq client ;
-
 RPC 实现
 过滤器的定义  分前置 后置 exception 普通
 @Filterdef{ }
@@ -30,19 +26,11 @@ class A impl xx{
            <dependency>
                     <groupId>io.seika</groupId>
                     <artifactId>spring-seika-nacos-starter</artifactId>
-                    <version>1.0.0</version>
+                    <version>1.2.0</version>
                 </dependency>
                 
                 
 ```
-zbus:
-    seika:
-    #    enabled: true //启用消息队列
-    #    address:
-        rpcPort: 25555 //启用rpc时候的端口
-    #    apiKey:
-    #    secretKey:
-zbus:
     seika:
         apiKey
         secretKey
@@ -52,3 +40,68 @@ zbus:
         rpcPort //如果提供了相关服务需要填写端口 默认15555 
         http://127.0.0.1:15555/doc  所实现该服务的进程
         
+
+
+
+
+``` code example 
+
+seika:
+  enabled: true
+  address: 192.168.2.104:54322 //使用rpc上的mq
+  rpcPort: 54322 //启动rpc相当于起了mq
+  apiKey: xxxx
+  secretKey: xxxx
+
+拿到一个mQ操作对象
+
+@Autowired
+ private SeikaMq seikamq ;
+
+
+//Mq的发送订阅 支持不同类型的javaClass
+seikamq.Sub("mq", "g", (Consumer<String>) s -> System.out.println(s));
+seikamq.Sub("mq", "g", (Consumer<A>) s -> System.out.println(s.getA()));
+seikamq.Sub("mq", "g", new DataHandler<Message>() {
+    //JsonKit.convert(message.getBody(),A.class)
+    @Override
+    public void handle(Message message) throws Exception {
+         System.out.println(message.getContext().toString());
+    }
+});
+seikamq.Pub("mq","gxxx","g",new DataHandler<Message>(){
+    @Override
+    public void handle(Message message) throws Exception {
+      //  System.out.println(message);
+    }
+});
+
+-------------------
+
+//使用nacos 自动注册然后拿到rpc对象。
+接口写法：
+@SeikaServiceApi("vpnui")
+public interface  XrayApi {
+    public int a();
+}
+注册：
+@RegSeikaApi({XrayApi.class})
+class App{}
+
+
+//手动拿到一个rpc接口实现
+final XrayApi a = SeikaRpcClient.Of("192.168.2.104:54322", XrayApi.class,"xxxx","xxxx“);
+
+
+————
+
+
+
+//拿到原始对象 可以判断是否连接成功
+RpcClient cn = SeikaRpcClient.OriginRpc("192.168.2.104:54322");
+System.out.println(a.a()+1);
+System.out.println("connected :"+cn.connected());
+
+
+
+```

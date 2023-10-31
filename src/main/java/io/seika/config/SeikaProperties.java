@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @ConfigurationProperties(prefix = SeikaProperties.SEIKA_PREFIX)
 public class SeikaProperties {
-    final static String SEIKA_PREFIX= "zbus.seika";
+    final static String SEIKA_PREFIX= "seika";
     public final static  String ENABLED = SeikaProperties.SEIKA_PREFIX + ".enabled";
     private String address;
     private int rpcPort;
