@@ -1,6 +1,6 @@
 package io.seika.mq;
 
-import io.seika.ZbusSeikaMq;
+import io.seika.SeikaMq;
 import io.seika.auth.DefaultSign;
 import io.seika.auth.RequestSign;
 import io.seika.transport.Message;
@@ -11,7 +11,7 @@ public class Sub {
 	public static void main(String[] args) throws Exception {
 		final String mq = "MyMQQ", channel = "000", mqType = Protocol.MEMORY;
 
-		ZbusSeikaMq dd = new ZbusSeikaMq("ws://127.0.0.1:15555", "", "");
+		SeikaMq dd = new SeikaMq("ws://127.0.0.1:15555", "", "");
 
 		dd.Sub(mq, channel, data -> {
 	System.out.println(data.getBody());

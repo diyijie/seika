@@ -1,5 +1,6 @@
 package io.seika;
 
+import io.seika.kit.JsonKit;
 import io.seika.mq.MqClient;
 import io.seika.mq.MqServer;
 import io.seika.mq.MqServerConfig;
@@ -16,12 +17,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
-public class ZbusSeikaMq implements EventHandler {
+public class SeikaMq implements EventHandler {
 	private MqClient client ;
 	private MqClient clientSub ;
 	private static Map<String, Boolean> created = new ConcurrentHashMap<>();
-	private static final Logger logger = LoggerFactory.getLogger(ZbusSeikaMq.class);
+	private static final Logger logger = LoggerFactory.getLogger(SeikaMq.class);
 
 	private String address ;
 
@@ -30,7 +32,7 @@ public class ZbusSeikaMq implements EventHandler {
 	}
  
 
-	public ZbusSeikaMq(MqServerConfig config ){
+	public SeikaMq(MqServerConfig config ){
 		MqServer server = new MqServer(config);
 		address = config.publicServer.getAddress();
  		client= newmq(server);
@@ -62,7 +64,7 @@ public class ZbusSeikaMq implements EventHandler {
 	private ExecutorService rePubExecutorService=  Executors.newSingleThreadExecutor();
 	//private MpscArrayQueue<Pair<Message, DataHandler>> queue= new MpscArrayQueue<>(1000);
 
-	public ZbusSeikaMq(String address, String apiKey, String secretKey){
+	public SeikaMq(String address, String apiKey, String secretKey){
 		clientSub = newc(address,apiKey,secretKey);
 		client = newc(address,apiKey,secretKey);
 		//实际上没有用到 因为errhanderl 不会被执行 内部如果没有发送出去的会缓存到list 然后有连接了再发送走
@@ -109,6 +111,7 @@ public class ZbusSeikaMq implements EventHandler {
 		Message msg = new Message();
 		msg.setHeader("cmd", "pub");  //Publish
 		msg.setHeader("mq", mq);
+		msg.setHeader("_Class_", body.getClass().getCanonicalName());
 		if (channel!=null && !channel.equals("")){
 			msg.setHeader("channel", channel);
 		}
@@ -122,6 +125,9 @@ public class ZbusSeikaMq implements EventHandler {
 		//	queue.add(Pair.pair(msg,dataHandler));
 		});
 
+	}
+	public <T> void  Sub(String mq, String channel, Consumer<T> c) throws IOException, InterruptedException {
+		this.Sub(mq, channel, (DataHandler<Message>) data -> c.accept(data.getContext()));
 	}
 
 	public void  Sub(String mq,String channel,DataHandler<Message> dataHandler) throws IOException, InterruptedException {
@@ -139,7 +145,21 @@ public class ZbusSeikaMq implements EventHandler {
 		//sub.setHeader("filter", "abc").
 		//
 		// +++-;
-		clientSub.addMqHandler(mq, channel, dataHandler);
+		clientSub.addMqHandler(mq, channel, new DataHandler<Message>() {
+			@Override
+			public void handle(Message data) throws Exception {
+				String cz = data.getHeader("_Class_");
+				if (cz!=null && !"".equals(cz)){
+					try {
+						Object json = JsonKit.convert(data.getBody(), Class.forName(cz));
+						data.setContext(json);
+					}catch (Exception e){
+
+					}
+				}
+				dataHandler.handle(data);
+			}
+		});
 
 		clientSub.invoke(sub, data->{
 			if (200==data.getStatus()){

@@ -1,6 +1,6 @@
 package io.seika.mq;
 
-import io.seika.ZbusSeikaMq;
+import io.seika.SeikaMq;
 import io.seika.kit.JsonKit;
 import io.seika.transport.DataHandler;
 import io.seika.transport.Message;
@@ -44,7 +44,7 @@ public class Pub {
 
 	@SuppressWarnings("resource")
 	public static void main(String[] args) throws Exception {
-		ZbusSeikaMq dd =new ZbusSeikaMq("ws://127.0.0.1:15555","","");
+		SeikaMq dd =new SeikaMq("ws://127.0.0.1:15555","","");
 		//dd =new MqSpringClient(new MqServerConfig("./conf/zbus.xml"));
 		long st = System.currentTimeMillis();
 		int nnnn=500;
@@ -101,7 +101,7 @@ public class Pub {
 			}
 		}
 		).start(); ;
-		ZbusSeikaMq dd2 =new ZbusSeikaMq("ws://127.0.0.1:15555","","");
+		SeikaMq dd2 =new SeikaMq("ws://127.0.0.1:15555","","");
 
 		new Thread(() -> {
 			final long[] lastn = {0};

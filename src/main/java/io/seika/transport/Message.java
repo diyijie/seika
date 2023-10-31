@@ -21,31 +21,23 @@
  * THE SOFTWARE.
  */
 package io.seika.transport;
- 
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TimeZone;
-import java.util.TreeMap;
-import java.util.function.Function;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.annotation.JSONField;
-
 import io.seika.kit.HttpKit;
 import io.seika.kit.HttpKit.UrlInfo;
 import io.seika.kit.JsonKit;
 import io.seika.kit.StrKit;
 import io.seika.transport.http.Http.FormData;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.function.Function;
 /**
  * Message takes format of standard HTTP:
  * <p> key-value headers  
@@ -709,5 +701,8 @@ public class Message {
 		
 		return params;
 	}
-	
+	@JSONField(serialize=false, deserialize=false)
+	public final boolean isSuccess(){
+		return this.status == 200 ;
+	}
 }

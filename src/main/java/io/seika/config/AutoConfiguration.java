@@ -1,6 +1,6 @@
 package io.seika.config;
 
-import io.seika.ZbusSeikaMq;
+import io.seika.SeikaMq;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
@@ -22,9 +22,9 @@ public class AutoConfiguration implements EnvironmentAware{
 
     @Bean()
     @ConditionalOnProperty(  name = SeikaProperties.ENABLED,havingValue = "true" )
-    public ZbusSeikaMq zbusSeikaClient(SeikaProperties prop )   {
+    public SeikaMq zbusSeikaClient(SeikaProperties prop )   {
         if (prop.getAddress()!=null && !prop.getAddress().equals("")){
-          return new ZbusSeikaMq(prop.getAddress(), prop.getApiKey(), prop.getSecretKey());
+          return new SeikaMq(prop.getAddress(), prop.getApiKey(), prop.getSecretKey());
         }
         return null ;
     }
