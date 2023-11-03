@@ -43,7 +43,8 @@ public class SeikaMq implements EventHandler {
 		client.heartbeat(30, TimeUnit.SECONDS);
 
 		client.onOpen(this);
-
+		//重连周期
+		client.setReconnectDelay(10000);
 		return client;
 	}
 	private MqClient newc(String address,String apiKey,String secretKey){

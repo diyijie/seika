@@ -26,6 +26,6 @@ public class AutoConfiguration implements EnvironmentAware{
         if (prop.getAddress()!=null && !prop.getAddress().equals("")){
           return new SeikaMq(prop.getAddress(), prop.getApiKey(), prop.getSecretKey());
         }
-        return null ;
+        throw new RuntimeException("configuration seika.address is epmty") ;
     }
 }

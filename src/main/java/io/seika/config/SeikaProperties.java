@@ -9,7 +9,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class SeikaProperties {
     final static String SEIKA_PREFIX= "seika";
     public final static  String ENABLED = SeikaProperties.SEIKA_PREFIX + ".enabled";
-    private String address;
+    private String address="127.0.0.1:15555";
     private int rpcPort;
     private String  apiKey ;
     private String  secretKey ;
