@@ -25,7 +25,7 @@
      <packaging>jar</packaging>
     <groupId>io.seika</groupId>
     <artifactId>spring-seika-nacos-starter</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
 
     <properties>
         <java.version>1.8</java.version>
@@ -65,13 +65,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
-            <version>2021.0.1.0</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
             <groupId>com.alibaba.nacos</groupId>
             <artifactId>nacos-common</artifactId>
             <version>${nacos.version}</version>
@@ -101,12 +94,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
          <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <version>2.3.12.RELEASE</version>
-             <optional>true</optional>
-
+<!--             <optional>true</optional>-->
          </dependency>
 
 
@@ -161,7 +154,7 @@
         <dependency>
             <groupId>io.seika</groupId>
             <artifactId>seika</artifactId>
-            <version>1.2.0</version>
+            <version>1.2.1</version>
             <scope>compile</scope>
         </dependency>
 

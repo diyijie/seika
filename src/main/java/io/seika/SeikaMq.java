@@ -194,4 +194,13 @@ public class SeikaMq implements EventHandler {
 			});
 		});
 	}
+	//auto refresh ,if need des !
+	public void des(){
+		try {
+			this.clientSub.close();
+			this.client.close();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

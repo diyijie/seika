@@ -127,5 +127,5 @@ public class MqClient extends Client {
 		mqHandler.handler = dataHandler;
 		
 		handlers.add(mqHandler); 
-	}  
+	}
 }

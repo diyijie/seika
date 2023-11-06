@@ -16,14 +16,25 @@
  */
 package io.zeika.nacos.springcloud.autoconfigure;
 
+import io.seika.SeikaMq;
+import io.seika.config.AutoConfiguration;
+import io.seika.config.SeikaProperties;
 import io.zeika.nacos.springcloud.SeikaRpcClient;
 import io.zeika.nacos.springcloud.ServiceRegister;
+import org.springframework.beans.factory.support.DefaultSingletonBeanRegistry;
+import org.springframework.cloud.context.environment.EnvironmentChangeEvent;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Map;
+
 
 @Configuration
-public class SeikaDiscoveryAutoConfiguration {
+public class SeikaDiscoveryAutoConfiguration implements ApplicationListener<EnvironmentChangeEvent> {
+
+
 
 	@Bean
 	public SeikaDiscoveryRegister seikaDiscoveryRegister() {
@@ -41,4 +52,35 @@ public class SeikaDiscoveryAutoConfiguration {
 	public ServiceRegister definer(){
 		return new ServiceRegister();
 	}
+
+	@Override
+	public void onApplicationEvent(EnvironmentChangeEvent environmentChangeEvent) {
+		boolean returnf = true;
+		for (String key : environmentChangeEvent.getKeys()) {
+			if (key.equals("seika.address")){
+				returnf = false;
+				break;
+			}
+		}
+		if (returnf){
+			return;
+		}
+		System.out.println(environmentChangeEvent.getSource());
+		ApplicationContext ct = ((ApplicationContext) environmentChangeEvent.getSource());
+		DefaultSingletonBeanRegistry registry = (DefaultSingletonBeanRegistry)ct.getAutowireCapableBeanFactory();
+		SeikaMq old= ct.getBean(SeikaMq.class);
+		if (old==null){
+			return;
+		}
+		old.des();
+		Map<String, SeikaMq> maps = ct.getBeansOfType(SeikaMq.class);
+		String beanname = maps.keySet().stream().findAny().get();
+
+		registry.destroySingleton(beanname);
+
+		SeikaProperties pro=ct.getBean(SeikaProperties.class);
+		pro.setAddress(ct.getEnvironment().getProperty("seika.address"));
+		SeikaMq newsingleton = (new AutoConfiguration()).zbusSeikaClient(pro);
+		registry.registerSingleton(beanname,newsingleton);
+ 	}
 }
