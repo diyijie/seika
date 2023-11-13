@@ -3,17 +3,17 @@ package io.seika.rpc;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import io.seika.rpc.annotation.Filter;
-import io.seika.rpc.annotation.Param;
-import io.seika.rpc.annotation.Route;
-import io.seika.rpc.doc.DocRender;
-import io.seika.transport.Message;
 import io.seika.kit.ClassKit;
 import io.seika.kit.HttpKit;
 import io.seika.kit.HttpKit.UrlInfo;
 import io.seika.kit.JsonKit;
 import io.seika.mq.Protocol;
 import io.seika.rpc.RpcMethod.MethodParam;
+import io.seika.rpc.annotation.Filter;
+import io.seika.rpc.annotation.Param;
+import io.seika.rpc.annotation.Route;
+import io.seika.rpc.doc.DocRender;
+import io.seika.transport.Message;
 import io.seika.transport.http.Http;
 import io.seika.transport.http.Http.FormData;
 import org.slf4j.Logger;
@@ -719,8 +719,13 @@ public class RpcProcessor {
 			Class<?>[] targetParamTypes = mi.reflectedMethod.getParameterTypes();
 			Object[] invokeParams = new Object[targetParamTypes.length];   
 			
-			applyParams(req, response, target, invokeParams); 
-			
+			applyParams(req, response, target, invokeParams);
+			//AopUtils.invokeJoinpointUsingReflection(mi.instance,mi.reflectedMethod,invokeParams)
+			if ((!Modifier.isPublic(mi.reflectedMethod.getModifiers()) ||
+					!Modifier.isPublic(mi.reflectedMethod.getDeclaringClass().getModifiers())) && !mi.reflectedMethod.isAccessible()) {
+				mi.reflectedMethod.setAccessible(true);
+			}
+
 			data = mi.reflectedMethod.invoke(mi.instance, invokeParams);
 			
 		} else if(mi.target != null) {
