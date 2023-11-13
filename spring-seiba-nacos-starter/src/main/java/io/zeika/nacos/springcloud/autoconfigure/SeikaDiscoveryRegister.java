@@ -119,7 +119,7 @@ public class SeikaDiscoveryRegister
                         logger.warn(clz.getName()+"not impl interface of  @SeikaServiceApi");
                         continue;
                     }
-                    p.mount( "/"+((Class<?>) typ).getCanonicalName(), service);
+                    p.mount( "/"+((Class<?>) typ).getCanonicalName(), service,clz);
                     have = true ;
                 }
 

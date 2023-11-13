@@ -1,15 +1,15 @@
 package io.seika.mq;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import io.seika.kit.FileKit;
+import io.seika.mq.model.MessageQueue;
+import io.seika.mq.plugin.MonitorUrlFilter;
 import io.seika.rpc.RpcProcessor;
 import io.seika.rpc.StaticResource;
 import io.seika.rpc.annotation.Route;
 import io.seika.transport.Message;
-import io.seika.kit.FileKit;
-import io.seika.mq.model.MessageQueue;
-import io.seika.mq.plugin.MonitorUrlFilter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MonitorServerAdaptor extends MqServerAdaptor {  
 	
@@ -29,7 +29,7 @@ public class MonitorServerAdaptor extends MqServerAdaptor {
 		staticResource.setCacheEnabled(false); // TODO turn if off in production
 		
 		rpcProcessor.mount("/", new MonitorService()); 
-		rpcProcessor.mount("/static", staticResource, false);
+		rpcProcessor.mount("/static", staticResource, false,null);
 		rpcProcessor.mountDoc(); 
 		
 		filterList.clear();

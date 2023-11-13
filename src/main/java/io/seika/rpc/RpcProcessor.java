@@ -66,31 +66,36 @@ public class RpcProcessor {
 		moduleTable = null; //mount just only once
 		return this;
 	}
-	
-	public RpcProcessor mount(String urlPrefix, Object service) { 
-		return mount(urlPrefix, service, true, true, true);
+	public RpcProcessor mount(String urlPrefix, Object service,Class serviceClz) {
+		return mount(urlPrefix, service, true, true, true,serviceClz);
+	}
+	public RpcProcessor mount(String urlPrefix, Object service ) {
+		return mount(urlPrefix, service, true, true, true, null);
 	}
 	
-	public RpcProcessor mount(String urlPrefix, Object service, boolean defaultAuth) {
-		return mount(urlPrefix, service, defaultAuth, true, true);
+	public RpcProcessor mount(String urlPrefix, Object service, boolean defaultAuth,Class serviceClz) {
+		return mount(urlPrefix, service, defaultAuth, true, true,serviceClz);
 	} 
 	
 	@SuppressWarnings("unchecked")
-	public RpcProcessor mount(String urlPrefix, Object service, boolean defaultAuth, boolean enableDoc, boolean overrideMethod) {  
+	public RpcProcessor mount(String urlPrefix, Object service, boolean defaultAuth, boolean enableDoc, boolean overrideMethod,Class<?> serviceClz) {
 		if(service instanceof List) {
 			List<Object> svcList = (List<Object>)service;
 			for(Object svc : svcList) {
-				mount(urlPrefix, svc, defaultAuth, enableDoc, overrideMethod);
+				mount(urlPrefix, svc, defaultAuth, enableDoc, overrideMethod,serviceClz);
 			}
 			return this;
 		} 
 		try {
 			if(service instanceof Class<?>) {
 				service = ((Class<?>)service).newInstance();
-			} 
-			
+			}
+			//外部传入clz 因为可能cglib的代理类 不然获取到的method有问题
+			if (serviceClz==null){
+				serviceClz=service.getClass();
+			}
 			List<RpcFilter> classFiltersIncluded = new ArrayList<>();  
-			Filter filter = service.getClass().getAnnotation(Filter.class);
+			Filter filter = serviceClz.getAnnotation(Filter.class);
 			if(filter != null) {
 				for(String name : filter.value()) {
 					RpcFilter rpcFilter = annotationFilterTable.get(name);
@@ -100,8 +105,8 @@ public class RpcProcessor {
 				}
 			}
 			
-			Method[] methods = service.getClass().getMethods(); 
-			Route r = service.getClass().getAnnotation(Route.class);
+			Method[] methods = serviceClz.getMethods();
+			Route r = serviceClz.getAnnotation(Route.class);
 			boolean defaultExcluded = false;
 			if(r != null) defaultExcluded = r.exclude();
 			
@@ -858,7 +863,7 @@ public class RpcProcessor {
 		render.setDocFile(docFile);
 		render.setEmbbedPageResource(this.embbedPageResource);
 		
-		mount(docUrl, render, false, false, false);
+		mount(docUrl, render, false, false, false,null);
 		return this;
 	}   
 
