@@ -187,7 +187,7 @@ public class WebsocketClient extends AbastractClient {
 	}  
 	
 	public synchronized void connect(){  
-		if(this.channelFuture != null) return; //on the way
+		if(this.channelFuture != null && this.channelFuture.channel().isActive()) return; //on the way
 		connectUnsafe();
 	}
 	
