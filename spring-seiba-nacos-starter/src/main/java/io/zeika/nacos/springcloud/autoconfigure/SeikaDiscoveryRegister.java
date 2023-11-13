@@ -101,15 +101,22 @@ public class SeikaDiscoveryRegister
         table = context.getBeansWithAnnotation(Route.class);
         for(Map.Entry<String, Object> e : table.entrySet()) {
             Object service = e.getValue();
-
-            Route anno = service.getClass().getAnnotation(Route.class);
-            if(anno == null) continue;
-            Type[] types = service.getClass().getGenericInterfaces() ;
+            Class<?> clz = service.getClass();
+            Route anno = clz.getAnnotation(Route.class);
+            if(anno == null) {
+                clz = clz.getSuperclass() ;
+               anno= clz.getAnnotation(Route.class);
+            };
+            if(anno == null) {
+                continue;
+            };
+            Type[] types = clz.getGenericInterfaces() ;
             for (Type typ:types
                  ) {
                 if (typ instanceof Class){
                     SeikaServiceApi api= (SeikaServiceApi) ((Class) typ).getAnnotation(SeikaServiceApi.class);
                     if(api==null){
+                        logger.warn(clz.getName()+"not impl interface of  @SeikaServiceApi");
                         continue;
                     }
                     p.mount( "/"+((Class<?>) typ).getCanonicalName(), service);

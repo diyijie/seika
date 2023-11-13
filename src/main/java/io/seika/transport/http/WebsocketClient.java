@@ -175,7 +175,7 @@ public class WebsocketClient extends AbastractClient {
 	
 	public void sendMessage(String command){
 		synchronized (connectLock) {
-			if(this.channel == null){
+			if(this.channel == null || !this.channel.isOpen()){
 				this.cachedSendingMessages.add(command);
 				this.connect();
 				return;
