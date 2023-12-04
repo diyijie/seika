@@ -65,8 +65,7 @@ public class SeikaDiscoveryAutoConfiguration implements ApplicationListener<Envi
 		if (returnf){
 			return;
 		}
-		System.out.println(environmentChangeEvent.getSource());
-		ApplicationContext ct = ((ApplicationContext) environmentChangeEvent.getSource());
+ 		ApplicationContext ct = ((ApplicationContext) environmentChangeEvent.getSource());
 		DefaultSingletonBeanRegistry registry = (DefaultSingletonBeanRegistry)ct.getAutowireCapableBeanFactory();
 		SeikaMq old= ct.getBean(SeikaMq.class);
 		if (old==null){
