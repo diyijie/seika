@@ -26,7 +26,7 @@ class A impl xx{
            <dependency>
                     <groupId>io.seika</groupId>
                     <artifactId>spring-seika-nacos-starter</artifactId>
-                    <version>1.2.0</version>
+                    <version>1.2.1</version>
                 </dependency>
                 
                 
@@ -102,6 +102,6 @@ RpcClient cn = SeikaRpcClient.OriginRpc("192.168.2.104:54322");
 System.out.println(a.a()+1);
 System.out.println("connected :"+cn.connected());
 
-
-
 ```
+
+mvn clean deploy -P release -Dmaven.test.skip=true
