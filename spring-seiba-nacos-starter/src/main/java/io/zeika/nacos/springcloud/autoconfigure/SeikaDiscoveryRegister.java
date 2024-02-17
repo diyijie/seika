@@ -37,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.boot.web.context.WebServerInitializedEvent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
@@ -48,7 +49,7 @@ import java.util.Map;
 
 @Component
 public class SeikaDiscoveryRegister
-        implements ApplicationListener<WebServerInitializedEvent>{
+        implements ApplicationListener<ApplicationStartedEvent>{ //WebServerInitializedEvent
 
     private static final Logger logger = LoggerFactory
             .getLogger(SeikaDiscoveryRegister.class);
@@ -158,12 +159,16 @@ public class SeikaDiscoveryRegister
         rpcServer.start();
         return true ;
     }
-    @Override
+    //@Override
     public void onApplicationEvent(WebServerInitializedEvent event) {
-        context=event.getApplicationContext();
+
+    }
 
 
-       boolean did=rpcStart();
+    @Override
+    public void onApplicationEvent(ApplicationStartedEvent applicationStartedEvent) {
+        context=applicationStartedEvent.getApplicationContext();
+        boolean did=rpcStart();
         try {
 
 
@@ -172,15 +177,13 @@ public class SeikaDiscoveryRegister
                 namingService = NacosFactory.createNamingService(configManager.getNacosConfigProperties().getServerAddr());
                 Register register = new Register(discoveryProperties,applicationName);
                 namingService.registerInstance(register.getServiceName(), register.getGroupName(),
-                    register);
-                 logger.info("Finished auto SeiKa-rpc register  : {}, ip : {}, port : {}",
-                    register.getServiceName(), register.getIp(), register.getPort());
+                        register);
+                logger.info("Finished auto SeiKa-rpc register  : {}, ip : {}, port : {}",
+                        register.getServiceName(), register.getIp(), register.getPort());
             }
 
         } catch (NacosException e) {
-             throw new RuntimeException(e);
+            throw new RuntimeException(e);
         }
     }
-
-
 }
